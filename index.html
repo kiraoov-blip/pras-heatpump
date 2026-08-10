@@ -13,19 +13,19 @@ header{background:#0f172a;color:white;padding:22px 30px 18px} header h1{margin:0
 .panel h2{font-size:16px;margin:0 0 12px}.panel h3{font-size:14px;margin:0 0 9px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.field select,.field input{width:100%;height:36px;border:1px solid #cfd7e3;border-radius:8px;background:#fff;padding:0 10px;color:var(--text)}
 .badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700;background:#e8eefc;color:#1d4ed8}.badge.off{background:#f2f4f7;color:#475569}.badge.scenario{background:#ecfdf5;color:#047857}.note{font-size:12px;color:var(--muted);line-height:1.55}.warn{color:var(--warn)}
 .kpis{grid-template-columns:repeat(6,1fr)}.kpi{min-height:100px}.kpi .lbl{font-size:12px;color:var(--muted);margin-bottom:9px}.kpi .val{font-size:23px;font-weight:750;letter-spacing:-.4px}.kpi .sub{font-size:12px;color:var(--muted);margin-top:7px}.good{color:var(--good)}.bad{color:var(--bad)}
-.two{grid-template-columns:1.2fr .8fr}.three{grid-template-columns:1fr 1fr 1fr}.tariff-strip{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;margin-top:10px}.hour{height:34px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#334155;background:#e9edf3;cursor:pointer;user-select:none;border:1px solid transparent;transition:transform .05s ease,filter .12s ease}.hour:hover{filter:brightness(.96);transform:translateY(-1px)}.hour.disc{background:#dbeafe;color:#1e40af;border-color:#bfdbfe}.hour.peak{background:#fee2e2;color:#991b1b;border-color:#fecaca}.hour.normal{background:#f1f5f9;border-color:#e2e8f0}
+.two{grid-template-columns:1.2fr .8fr}.three{grid-template-columns:1fr 1fr 1fr}.tariff-compare{margin-top:12px;overflow-x:auto;padding-bottom:2px}.tariff-row{display:grid;grid-template-columns:118px minmax(900px,1fr);gap:9px;align-items:center;margin-top:7px}.tariff-row-label{font-size:12px;font-weight:700;color:#475569;text-align:right;white-space:nowrap}.tariff-strip{display:grid;grid-template-columns:repeat(24,1fr);gap:3px}.hour{height:42px;border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:10px;color:#334155;background:#e9edf3;cursor:pointer;user-select:none;border:1px solid transparent;transition:transform .05s ease,filter .12s ease}.hour .hn{font-weight:700;font-size:10px}.hour .hs{font-size:9px;opacity:.82}.hour:hover{filter:brightness(.96);transform:translateY(-1px)}.hour.fixed{cursor:default;transform:none}.hour.fixed:hover{filter:none;transform:none}.hour.disc{background:#dbeafe;color:#1e40af;border-color:#bfdbfe}.hour.peak{background:#fee2e2;color:#991b1b;border-color:#fecaca}.hour.normal{background:#f1f5f9;border-color:#e2e8f0}
 .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:9px}table{border-collapse:collapse;width:100%;min-width:720px}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:right;white-space:nowrap}th{background:#f8fafc;color:#475569;font-size:12px;position:sticky;top:0}th:first-child,td:first-child{text-align:left}tr:last-child td{border-bottom:none}tr:hover td{background:#fafcff}.best{font-weight:700;color:var(--good)}.selected-row td{background:#f8fbff}
 .chartbox{height:300px;position:relative}canvas{width:100%;height:100%;display:block}.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:#475569;margin-top:8px}.legend span:before{content:'';display:inline-block;width:11px;height:3px;background:currentColor;margin-right:5px;vertical-align:middle}
 .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}button{height:34px;border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:0 11px;cursor:pointer;color:#334155}button.primary{background:#1d4ed8;color:#fff;border-color:#1d4ed8}button:hover{filter:brightness(.98)}
 .rategrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rates{font-size:12px;line-height:1.65}.rates b{font-size:13px}.sep{height:1px;background:#edf0f4;margin:12px 0}.statusline{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:11px}.mini{font-size:11px;color:var(--muted)}
 .comparebar{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin-top:12px}.comparebar .side{font-size:12px;color:#475569}.comparebar .side b{display:block;color:#172033;font-size:14px;margin-top:3px}.arrow{font-size:18px;color:#94a3b8}
-.modehint{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-top:10px}.modehint .field{min-width:180px}.hourlegend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#64748b}.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:4px;vertical-align:-1px}.swatch.disc{background:#dbeafe;border:1px solid #bfdbfe}.swatch.peak{background:#fee2e2;border:1px solid #fecaca}.swatch.normal{background:#f1f5f9;border:1px solid #e2e8f0}
+.modehint{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:10px}.hourlegend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#64748b}.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:4px;vertical-align:-1px}.swatch.disc{background:#dbeafe;border:1px solid #bfdbfe}.swatch.peak{background:#fee2e2;border:1px solid #fecaca}.swatch.normal{background:#f1f5f9;border:1px solid #e2e8f0}
 footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
-@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.two,.three{grid-template-columns:1fr}}@media(max-width:700px){.wrap{padding:12px}.kpis{grid-template-columns:1fr 1fr}.rategrid{grid-template-columns:1fr}.comparebar{grid-template-columns:1fr}.arrow{display:none}header{padding:18px}.kpi .val{font-size:19px}}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.two,.three{grid-template-columns:1fr}}@media(max-width:700px){.wrap{padding:12px}.kpis{grid-template-columns:1fr 1fr}.rategrid{grid-template-columns:1fr}.comparebar{grid-template-columns:1fr}.arrow{display:none}header{padding:18px}.kpi .val{font-size:19px}.tariff-row{grid-template-columns:105px minmax(900px,1fr)}.tariff-row-label{font-size:11px}}
 </style>
 </head>
 <body>
-<header><h1>제주 히트펌프 요금분석 시뮬레이터</h1><p>히트펌프 별도계량 사용량 · 2026년 현행 요금표 적용 · 기준요금제/시나리오 선택 · 부하이전 미적용</p></header>
+<header><h1>제주 히트펌프 요금분석 시뮬레이터</h1><p>히트펌프 별도계량 사용량 · 2026년 현행 요금표 적용 · 기준요금제/시나리오 선택 · 시간대 클릭 편집 · 부하이전 미적용</p></header>
 <div class="wrap">
   <div class="panel">
     <div class="statusline"><div><span class="badge off">부하이전 미적용</span> <span class="badge">전력량요금만 비교</span></div><div class="mini" id="dataStatus"></div></div>
@@ -57,11 +57,20 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
         <div class="field"><label>인상시간</label><input id="peakHours" disabled></div>
       </div>
       <div class="modehint">
-        <div class="field"><label>시간대 편집 모드</label><select id="hourEditMode"><option value="disc">할인시간으로 지정</option><option value="peak">인상시간으로 지정</option><option value="normal">일반시간으로 지정</option></select></div>
-        <div class="hourlegend"><span><i class="swatch disc"></i>할인</span><span><i class="swatch normal"></i>일반</span><span><i class="swatch peak"></i>인상</span><span>아래 시간 블록을 클릭하여 변경</span></div>
+        <div class="hourlegend"><span><i class="swatch disc"></i>할인</span><span><i class="swatch normal"></i>일반</span><span><i class="swatch peak"></i>인상</span></div>
+        <div class="mini">시나리오 시간 블록 클릭 시 <b>할인 → 일반 → 인상 → 할인</b> 순으로 변경</div>
       </div>
-      <div class="tariff-strip" id="tariffStrip"></div>
-      <div class="note" style="margin-top:8px">히트펌프 전용요금은 일반용(갑)Ⅰ 저압의 해당 계절 전력량단가를 기준으로 할인시간 <b id="discMultTxt">49%</b>, 인상시간 <b id="upMultTxt">150%</b>, 일반시간 100%를 적용함. 시간대 설정은 자유롭게 변경 가능함.</div>
+      <div class="tariff-compare">
+        <div class="tariff-row">
+          <div class="tariff-row-label" id="baselineTimeLabel">현행 기준 시간대</div>
+          <div class="tariff-strip" id="baselineTariffStrip"></div>
+        </div>
+        <div class="tariff-row">
+          <div class="tariff-row-label">시나리오 시간대</div>
+          <div class="tariff-strip" id="tariffStrip"></div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:8px">위 행은 선택한 <b>기준 요금제의 현행 시간대</b>를 고정 표시하고, 아래 행만 클릭하여 변경함. 히트펌프 전용요금은 일반용(갑)Ⅰ 저압의 해당 계절 전력량단가를 기준으로 할인시간 <b id="discMultTxt">49%</b>, 인상시간 <b id="upMultTxt">150%</b>, 일반시간 100%를 적용함.</div>
     </div>
     <div class="panel">
       <h2>2026년 적용 요금표</h2>
@@ -127,7 +136,11 @@ function matchFilters(r, ignoreWeekday=false){const [c,y,m,d,w]=r;const Y=$('yea
 function buildMonthParams(){const totals=new Map();for(const r of RAW){if(!matchFilters(r,true))continue;const key=r[0]+'|'+r[1]+'|'+r[2];let u=totals.get(key)||0;for(let h=0;h<24;h++){const v=r[5+h];if(v!=null)u+=v}totals.set(key,u)}const progEff=new Map(),touSuperFrac=new Map();for(const [k,u] of totals){const m=+k.split('|')[2];progEff.set(k,u>0?progBill(m,u)/u:0);const superMonth=[1,2,6,7,8,11,12].includes(m);touSuperFrac.set(k,superMonth&&u>1000?(u-1000)/u:0)}return {progEff,touSuperFrac}}
 function tariffValue(x,key){return x?.[key]??0}
 function summarizeHours(state){const ranges=[];let start=null;for(let h=0;h<=24;h++){const active=h<24&&cosyHours[h]===state;if(active&&start===null)start=h;if(!active&&start!==null){ranges.push([start,h]);start=null}}if(!ranges.length)return'없음';return ranges.map(([a,b])=>String(a).padStart(2,'0')+'~'+String(b).padStart(2,'0')).join(' / ')}
-function renderTariffStrip(){let strip='';for(let h=0;h<24;h++){const st=cosyHours[h];strip+=`<div class="hour ${st}" data-hour="${h}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · 클릭하여 변경">${h}</div>`}$('tariffStrip').innerHTML=strip;$('discountHours').value=summarizeHours('disc');$('peakHours').value=summarizeHours('peak');document.querySelectorAll('#tariffStrip .hour').forEach(el=>el.addEventListener('click',()=>{const h=+el.dataset.hour;cosyHours[h]=$('hourEditMode').value;renderTariffStrip();calculate()}))}
+function hourStateLabel(st){return st==='disc'?'할인':st==='peak'?'인상':'일반'}
+function baselineHourState(h){const base=$('baseTariff').value;if(base==='t'){if(h>=22||h<8)return'disc';if(h<16)return'normal';return'peak'}return'normal'}
+function nextHourState(st){return st==='disc'?'normal':st==='normal'?'peak':'disc'}
+function renderBaselineTariffStrip(){const base=$('baseTariff').value;let strip='';for(let h=0;h<24;h++){const st=baselineHourState(h);strip+=`<div class="hour fixed ${st}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · 기준 시간대(편집 불가)"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span></div>`}$('baselineTariffStrip').innerHTML=strip;$('baselineTimeLabel').textContent='현행 기준 · '+TARIFF_NAMES[base]}
+function renderTariffStrip(){renderBaselineTariffStrip();let strip='';for(let h=0;h<24;h++){const st=cosyHours[h];strip+=`<div class="hour ${st}" data-hour="${h}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · 클릭: 할인→일반→인상 순환"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span></div>`}$('tariffStrip').innerHTML=strip;$('discountHours').value=summarizeHours('disc');$('peakHours').value=summarizeHours('peak');document.querySelectorAll('#tariffStrip .hour').forEach(el=>el.addEventListener('click',()=>{const h=+el.dataset.hour;cosyHours[h]=nextHourState(cosyHours[h]);renderTariffStrip();calculate()}))}
 function calculate(){
  const {progEff,touSuperFrac}=buildMonthParams();
  let total={u:0,g:0,p:0,t:0,o:0,n:0,missing:0};const byMonth={};const byCust=new Map();const byHour=Array.from({length:24},()=>({u:0,n:0}));const bySW=new Map();
@@ -155,7 +168,7 @@ function drawMonthly(byMonth,baseKey,scenarioKey){const {ctx,w,h}=prepCanvas('mo
 function setup(){
  const y=$('year');y.innerHTML='<option value="all">전체 (2022~2026)</option>'+Object.keys(META.years).map(v=>`<option value="${v}" ${v==='2025'?'selected':''}>${v}년${v==='2026'?' (8/5까지)':''}</option>`).join('');for(let m=1;m<=12;m++)$('month').insertAdjacentHTML('beforeend',`<option value="${m}">${m}월</option>`);for(const c of META.customers)$('customer').insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`);$('sourceFile').textContent=META.source_file;$('dataStatus').textContent=`${META.records.toLocaleString()}일 · ${META.customers.length}개 고객 · 전체 관측률 ${META.coverage}%`;
  renderTariffStrip();
- for(const id of ['year','month','customer','season','weekday','baseTariff','scenarioTariff','discountPct','upliftPct'])$(id).addEventListener('change',()=>{updateCoverage();calculate()});$('discountPct').addEventListener('input',calculate);$('upliftPct').addEventListener('input',calculate);
+ for(const id of ['year','month','customer','season','weekday','scenarioTariff','discountPct','upliftPct'])$(id).addEventListener('change',()=>{updateCoverage();calculate()});$('baseTariff').addEventListener('change',()=>{renderTariffStrip();updateCoverage();calculate()});$('discountPct').addEventListener('input',calculate);$('upliftPct').addEventListener('input',calculate);
  $('resetScenario').onclick=()=>{$('discountPct').value='51.0';$('upliftPct').value='50.0';resetCosyHours();renderTariffStrip();calculate()};
  $('exportCsv').onclick=exportCsv;updateCoverage();calculate();
 }
