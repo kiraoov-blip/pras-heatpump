@@ -223,6 +223,23 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 @media(max-width:760px){.results-pane>.cosy-settings .hour{height:36px!important}.results-pane>.cosy-settings .hour .tb{font-size:6px}.effect-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.effect-summary{grid-template-columns:1fr}}
 
+
+/* v13: household and deployment scaling analysis */
+.deployment-controls{display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:10px;margin-top:10px}
+.deployment-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.deployment-card{border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc;padding:11px 12px;min-width:0}
+.deployment-card .dl{font-size:11px;color:#64748b}
+.deployment-card .dv{font-size:18px;font-weight:800;margin-top:4px;white-space:nowrap}
+.deployment-card .ds{font-size:10px;color:#94a3b8;margin-top:3px;line-height:1.35}
+.household-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}
+.household-summary .deployment-card .dv{font-size:17px}
+#householdEffectTable{min-width:0}
+#householdEffectTable th,#householdEffectTable td{text-align:right}
+#householdEffectTable th:first-child,#householdEffectTable td:first-child{text-align:left}
+.projection-grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media(max-width:1180px){.deployment-controls{grid-template-columns:1fr 1fr}.deployment-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.deployment-controls,.household-summary,.deployment-kpis{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -337,11 +354,35 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 </div>
 <div class="note effect-note" id="effectNote">단가효과와 수요이전 효과를 합산하면 총 요금변화와 일치함.</div>
 </div>
+<div class="panel"><h2>가구당 연간 효과 및 보급 확대 분석</h2>
+<div class="note" style="margin-bottom:10px"><b>2025년 전체 16개 고객</b>을 고정 표본으로 사용하며, 현재 선택한 기준요금제·시나리오 단가·시간대·부하이전 조건을 적용함. 가구당 피크는 16개 고객의 동일 시각 평균부하에서 산출한 연간 동시피크 기준임.</div>
+<div class="household-summary">
+<div class="deployment-card"><div class="dl">가구당 연간 요금 절감액</div><div class="dv" id="hhBillSaving">-</div><div class="ds">기준요금 − 시나리오요금</div></div>
+<div class="deployment-card"><div class="dl">가구당 연간 전력사용량 변화</div><div class="dv" id="hhEnergyChange">-</div><div class="ds">시나리오 − 기준 · 현재 부하이전은 총 kWh 보존</div></div>
+<div class="deployment-card"><div class="dl">가구당 연간 피크 절감량</div><div class="dv" id="hhPeakSaving">-</div><div class="ds">기준 동시피크 − 시나리오 동시피크</div></div>
+</div>
+<div class="tablewrap"><table id="householdEffectTable"><thead><tr><th>지표</th><th>기준안</th><th>시나리오</th><th>변화량<br/><span class="mini">시나리오−기준</span></th><th>변화율</th></tr></thead><tbody></tbody></table></div>
+<div class="sep"></div>
+<h3 style="margin:0 0 4px;font-size:15px">보급 확대 가정</h3>
+<div class="deployment-controls">
+<div class="field"><label>목표 보급 가구수</label><div class="sliderpair"><input id="targetHouseholds" type="number" min="0" max="200000" step="100" value="100000"/><input id="targetHouseholdsSlider" type="range" min="0" max="200000" step="100" value="100000"/></div></div>
+<div class="field"><label>가입률 (%)</label><div class="sliderpair"><input id="participationRate" type="number" min="0" max="100" step="0.1" value="50.0"/><input id="participationRateSlider" type="range" min="0" max="100" step="0.1" value="50"/></div></div>
+<div class="field"><label>CO₂ 배출계수 (kgCO₂/kWh)</label><input id="co2Factor" type="number" min="0" step="0.0001" value="0.4149"/></div>
+</div>
+<div class="deployment-kpis">
+<div class="deployment-card"><div class="dl">예상 가입가구</div><div class="dv" id="subscriberHouseholds">-</div><div class="ds" id="subscriberFormula">목표 보급가구 × 가입률</div></div>
+<div class="deployment-card"><div class="dl">가입자 총 요금 절감액</div><div class="dv" id="totalBillSaving">-</div><div class="ds">연간 · 가구당 효과 선형 확대</div></div>
+<div class="deployment-card"><div class="dl">가입자 총 전력절감량</div><div class="dv" id="totalEnergySaving">-</div><div class="ds">연간 사용량 감소분 · 순수 부하이전이면 0</div></div>
+<div class="deployment-card"><div class="dl">가입자 총 피크 절감량</div><div class="dv" id="totalPeakSaving">-</div><div class="ds">2025 표본의 동시피크 효과 선형 확대</div></div>
+<div class="deployment-card"><div class="dl">CO₂ 절감량</div><div class="dv" id="totalCo2Saving">-</div><div class="ds">전력절감량 × 배출계수</div></div>
+</div>
+<div class="note" id="deploymentNote" style="margin-top:10px">현재 부하이전은 에너지를 절감하지 않고 시간대만 이동하므로 연간 전력절감량과 고정 배출계수 기준 CO₂ 절감량은 0이 원칙임.</div>
+</div>
 <div class="panel"><h2>월별 기준안·시나리오 비교</h2><div class="chartbox"><canvas id="monthlyChart"></canvas></div><div class="legend"><span id="legendBase" style="color:#475569">기준안</span><span id="legendScenario" style="color:#0f766e">시나리오</span></div></div><div class="grid two">
 <div class="panel"><h2>주택용 TOU · 계절/요일별 분석</h2><div class="note" style="margin-bottom:8px">제주 주택용 TOU의 시간대 구분은 요일에 따라 달라지지 않음. 아래 표는 동일 요금체계를 실제 사용량 기준으로 계절·요일별 분해한 결과임.</div><div class="tablewrap" style="max-height:420px"><table id="touBreakTable"><thead><tr><th>계절</th><th>요일</th><th>사용량</th><th>TOU 요금</th><th>평균단가</th></tr></thead><tbody></tbody></table></div></div>
 <div class="panel"><h2>고객별 기준안·시나리오 비교</h2><div class="actions" style="margin-bottom:9px"><button id="exportCsv">분석결과 CSV 내보내기</button></div><div class="tablewrap" style="max-height:420px"><table id="customerTable"><thead><tr><th>고객ID</th><th>사용량</th><th>기준요금</th><th>시나리오요금</th><th>증감액</th><th>증감률</th></tr></thead><tbody></tbody></table></div></div>
 </div><div class="panel"><h2>분석 기준 및 해석</h2>
-<div class="note">① 히트펌프 별도계량 사용량만 사용하며 기본요금·기후환경요금·연료비조정요금·부가가치세·전력산업기반기금은 제외함. ② 기준요금제는 주택용 누진제·주택용 TOU·일반용(저압) 중 선택하며, 시나리오 요금제는 세 현행 요금제와 히트펌프 전용요금 중 선택함. ③ 주택용 누진제는 히트펌프 사용량을 별도 주택용 계량으로 가정한 환산 전력량요금이며 실제 가구 전체 전기요금과는 다름. ④ 요일 필터 적용 시 주택용 누진요금은 고객·월별 전체 히트펌프 사용량으로 산정한 실효 전력량단가를 선택 요일 사용량에 귀속함. 주택용 TOU의 월 1,000kWh 초과분도 월 사용량 비중에 따라 시간대별로 귀속함. ⑤ 결측 시간값은 사용량 및 요금 산정에서 제외함. ⑥ 히트펌프 전용요금은 비율 조정 또는 직접 단가 입력 방식 중 하나를 선택할 수 있음. ⑦ 부하이전 적용 시 선택한 원천 시간대 사용량의 설정 비율을 같은 고객·같은 날짜의 할인시간대로 이동하며, 균등배분 또는 기존 할인시간 사용패턴 비례배분을 선택할 수 있음. 일 사용량 총계는 보존하며 날짜 간 이동은 허용하지 않음. 총 이전량은 원천시간 사용량×이전율로 먼저 확정되므로 배분방식 변경만으로는 변하지 않음. ⑧ 부하이전은 히트펌프 전용요금의 시나리오 사용패턴과 요금에 반영되며 다른 현행 요금제 계산은 원래 사용패턴을 유지함. ⑨ 시간대별 사용량 변화는 주택용 TOU 시간대 기준(경부하 22~08시, 중간부하 08~16시, 최대부하 16~22시)의 관측시간당 평균 kWh로 산정함. ⑩ 요금효과 분해는 단가효과(기존 사용패턴에 시나리오 단가만 적용한 요금−기준요금)와 수요이전 효과(부하이전 후 시나리오요금−기존 사용패턴 기준 시나리오요금)로 구분하며 두 효과의 합은 총 요금변화와 일치함.</div>
+<div class="note">① 히트펌프 별도계량 사용량만 사용하며 기본요금·기후환경요금·연료비조정요금·부가가치세·전력산업기반기금은 제외함. ② 기준요금제는 주택용 누진제·주택용 TOU·일반용(저압) 중 선택하며, 시나리오 요금제는 세 현행 요금제와 히트펌프 전용요금 중 선택함. ③ 주택용 누진제는 히트펌프 사용량을 별도 주택용 계량으로 가정한 환산 전력량요금이며 실제 가구 전체 전기요금과는 다름. ④ 요일 필터 적용 시 주택용 누진요금은 고객·월별 전체 히트펌프 사용량으로 산정한 실효 전력량단가를 선택 요일 사용량에 귀속함. 주택용 TOU의 월 1,000kWh 초과분도 월 사용량 비중에 따라 시간대별로 귀속함. ⑤ 결측 시간값은 사용량 및 요금 산정에서 제외함. ⑥ 히트펌프 전용요금은 비율 조정 또는 직접 단가 입력 방식 중 하나를 선택할 수 있음. ⑦ 부하이전 적용 시 선택한 원천 시간대 사용량의 설정 비율을 같은 고객·같은 날짜의 할인시간대로 이동하며, 균등배분 또는 기존 할인시간 사용패턴 비례배분을 선택할 수 있음. 일 사용량 총계는 보존하며 날짜 간 이동은 허용하지 않음. 총 이전량은 원천시간 사용량×이전율로 먼저 확정되므로 배분방식 변경만으로는 변하지 않음. ⑧ 부하이전은 히트펌프 전용요금의 시나리오 사용패턴과 요금에 반영되며 다른 현행 요금제 계산은 원래 사용패턴을 유지함. ⑨ 시간대별 사용량 변화는 주택용 TOU 시간대 기준(경부하 22~08시, 중간부하 08~16시, 최대부하 16~22시)의 관측시간당 평균 kWh로 산정함. ⑩ 요금효과 분해는 단가효과(기존 사용패턴에 시나리오 단가만 적용한 요금−기준요금)와 수요이전 효과(부하이전 후 시나리오요금−기존 사용패턴 기준 시나리오요금)로 구분하며 두 효과의 합은 총 요금변화와 일치함. ⑪ 가구당 연간 효과와 보급 확대 효과는 2025년 전체 16개 고객을 고정 표본으로 사용하며, 가구당 피크는 동일 시각의 표본 평균부하 중 연중 최대값(동시피크)으로 산정함. ⑫ 목표 보급가구수×가입률을 예상 가입가구로 하여 가구당 효과를 선형 확대함. 현재 부하이전은 총 kWh를 보존하므로 전력절감량과 고정 연평균 배출계수 기준 CO₂ 절감량은 원칙적으로 0이며, 시간대별 한계배출계수 효과는 포함하지 않음.</div>
 </div></main></div>
 
 
@@ -417,7 +458,7 @@ function render(total,byMonth,byCust,byHour,bySW){
  const diff=scenario-base,pct=base?diff/base*100:NaN;$('kDiff').textContent=fmtWon(diff);$('kDiff').className='val '+(diff<0?'good':diff>0?'bad':'');$('kDiffPct').textContent=fmtPct(pct);$('kDiffPct').className='val '+(pct<0?'good':pct>0?'bad':'');
  const tariffs=[['g',total.g],['p',total.p],['t',total.t],['o',total.o]].filter(x=>Number.isFinite(x[1])&&total.u>0);tariffs.sort((a,b)=>a[1]-b[1]);$('kBest').textContent=tariffs.length?TARIFF_NAMES[tariffs[0][0]]:'-';$('kBestSub').textContent=tariffs.length&&base?('기준 대비 '+fmtPct((tariffs[0][1]/base-1)*100)):'-';
  const tb=$('summaryTable').querySelector('tbody');tb.innerHTML='';const order=[['g',total.g],['p',total.p],['t',total.t],['o',total.o]],min=Math.min(...order.map(x=>x[1]));for(const [key,val] of order){const tr=document.createElement('tr'),dlt=val-base,pp=base?dlt/base*100:NaN;const tags=(key===baseKey?' <span class="badge off">기준</span>':'')+(key===scenarioKey?' <span class="badge scenario">시나리오</span>':'');if(key===scenarioKey)tr.className='selected-row';tr.innerHTML=`<td class="${val===min?'best':''}">${TARIFF_NAMES[key]}${tags}</td><td>${fmtWon(val)}</td><td class="${dlt<0?'good':dlt>0?'bad':''}">${key===baseKey?'기준':fmtWon(dlt)}</td><td class="${pp<0?'good':pp>0?'bad':''}">${key===baseKey?'-':fmtPct(pp)}</td><td>${fmtRate(total.u?val/total.u:NaN)}</td>`;tb.appendChild(tr)}
- renderCustomer(byCust,baseKey,scenarioKey);renderTouBreak(bySW);drawHourly(byHour,scenarioKey);renderLoadBandSummary(byHour,scenarioKey);drawBillEffects(total,baseKey,scenarioKey);drawMonthly(byMonth,baseKey,scenarioKey);
+ renderCustomer(byCust,baseKey,scenarioKey);renderTouBreak(bySW);drawHourly(byHour,scenarioKey);renderLoadBandSummary(byHour,scenarioKey);drawBillEffects(total,baseKey,scenarioKey);drawMonthly(byMonth,baseKey,scenarioKey);renderDeploymentEffects();
 }
 
 function renderLoadBandSummary(byHour,scenarioKey){
@@ -457,6 +498,70 @@ function drawBillEffects(total,baseKey,scenarioKey){
  vals.forEach((v,i)=>{const x=pad.l+i*groupW+(groupW-barW)/2,bh=Math.abs(v)/maxAbs*(ch/2),y=v>=0?y0-bh:y0;ctx.fillStyle=v<0?'#0f766e':v>0?'#dc2626':'#94a3b8';ctx.fillRect(x,y,barW,Math.max(1,bh));ctx.fillStyle='#334155';ctx.font='11px Arial';const valTxt=(v>=0?'+':'')+Math.round(v).toLocaleString()+'원';ctx.fillText(valTxt,Math.max(pad.l,x+barW/2-valTxt.length*3.2),v>=0?Math.max(13,y-6):Math.min(h-32,y+bh+15));ctx.fillStyle='#64748b';ctx.fillText(labels[i],x+barW/2-labels[i].length*6,h-18)});
 }
 
+
+function fmtPower(v){
+ if(!Number.isFinite(v))return '-';
+ const a=Math.abs(v),sg=v<0?'-':'';
+ if(a>=1000)return sg+(a/1000).toLocaleString(undefined,{maximumFractionDigits:2})+' MW';
+ return sg+a.toLocaleString(undefined,{maximumFractionDigits:2})+' kW';
+}
+function fmtCo2Kg(v){
+ if(!Number.isFinite(v))return '-';
+ const a=Math.abs(v),sg=v<0?'-':'';
+ if(a>=1000000)return sg+(a/1000000).toLocaleString(undefined,{maximumFractionDigits:2})+' ktCO₂';
+ if(a>=1000)return sg+(a/1000).toLocaleString(undefined,{maximumFractionDigits:2})+' tCO₂';
+ return sg+a.toLocaleString(undefined,{maximumFractionDigits:1})+' kgCO₂';
+}
+function buildAnnual2025MonthParams(){
+ const totals=new Map();
+ for(const r of RAW){if(r[1]!==2025)continue;const key=r[0]+'|'+r[2];let u=totals.get(key)||0;for(let h=0;h<24;h++){const v=r[5+h];if(v!=null)u+=v}totals.set(key,u)}
+ const progEff=new Map(),touSuperFrac=new Map();
+ for(const [k,u] of totals){const m=+k.split('|')[1];progEff.set(k,u>0?progBill(m,u)/u:0);const superMonth=[1,2,6,7,8,11,12].includes(m);touSuperFrac.set(k,superMonth&&u>1000?(u-1000)/u:0)}
+ return {progEff,touSuperFrac};
+}
+function calculateAnnual2025Sample(){
+ const baseKey=$('baseTariff').value,scenarioKey=$('scenarioTariff').value,{progEff,touSuperFrac}=buildAnnual2025MonthParams();
+ const custSet=new Set(),tot={u:0,su:0,g:0,p:0,t:0,o:0},clock=new Map();
+ for(const r of RAW){
+  if(r[1]!==2025)continue;
+  const [c,y,m,d,w]=r;custSet.add(c);const keyCM=c+'|'+m,pe=progEff.get(keyCM)||0,tf=touSuperFrac.get(keyCM)||0,gr=generalRate(m);
+  const vals=Array.from({length:24},(_,h)=>r[5+h]);const shifted=shiftDailyValues(vals);const useShift=scenarioKey==='o'&&shiftEnabled();
+  for(let h=0;h<24;h++){
+   const v=vals[h];if(v==null)continue;const sv=useShift?(shifted.values[h]==null?v:shifted.values[h]):v;
+   tot.u+=v;tot.su+=sv;tot.g+=v*gr;tot.p+=v*pe;tot.t+=v*((1-tf)*touRate(m,h)+tf*736.2);tot.o+=sv*cosyRate(m,h);
+   const tk=`${m}-${d}-${h}`;let z=clock.get(tk);if(!z){z={b:0,s:0,n:0};clock.set(tk,z)}z.b+=v;z.s+=sv;z.n++;
+  }
+ }
+ const nCust=custSet.size||1,baseBill=tariffValue(tot,baseKey),scenarioBill=tariffValue(tot,scenarioKey);
+ let basePeak=0,scenarioPeak=0;
+ for(const z of clock.values()){if(!z.n)continue;basePeak=Math.max(basePeak,z.b/z.n);scenarioPeak=Math.max(scenarioPeak,z.s/z.n)}
+ return {nCust,baseBill:baseBill/nCust,scenarioBill:scenarioBill/nCust,baseEnergy:tot.u/nCust,scenarioEnergy:tot.su/nCust,basePeak,scenarioPeak};
+}
+function renderDeploymentEffects(){
+ if(!$('householdEffectTable'))return;
+ const x=calculateAnnual2025Sample(),billDelta=x.scenarioBill-x.baseBill,billPct=x.baseBill?billDelta/x.baseBill*100:NaN,energyDeltaRaw=x.scenarioEnergy-x.baseEnergy,energyDelta=Math.abs(energyDeltaRaw)<1e-6?0:energyDeltaRaw,energyPct=x.baseEnergy?energyDelta/x.baseEnergy*100:NaN,peakDelta=x.scenarioPeak-x.basePeak,peakPct=x.basePeak?peakDelta/x.basePeak*100:NaN;
+ const billSaving=-billDelta,energySaving=-energyDelta,peakSaving=-peakDelta;
+ $('hhBillSaving').textContent=fmtWon(billSaving);$('hhBillSaving').className='dv '+(billSaving>0?'good':billSaving<0?'bad':'');
+ $('hhEnergyChange').textContent=(energyDelta>0?'+':'')+fmtKwh(energyDelta);$('hhEnergyChange').className='dv '+(energyDelta<0?'good':energyDelta>0?'bad':'');
+ $('hhPeakSaving').textContent=fmtPower(peakSaving);$('hhPeakSaving').className='dv '+(peakSaving>0?'good':peakSaving<0?'bad':'');
+ const rows=[
+  ['연간 전력량요금',fmtWon(x.baseBill),fmtWon(x.scenarioBill),fmtWon(billDelta),fmtPct(billPct),billDelta],
+  ['연간 전력사용량',fmtKwh(x.baseEnergy),fmtKwh(x.scenarioEnergy),(energyDelta>0?'+':'')+fmtKwh(energyDelta),fmtPct(energyPct),energyDelta],
+  ['연간 동시피크',fmtPower(x.basePeak),fmtPower(x.scenarioPeak),(peakDelta>0?'+':'')+fmtPower(peakDelta),fmtPct(peakPct),peakDelta]
+ ];
+ const tb=$('householdEffectTable').querySelector('tbody');tb.innerHTML='';
+ for(const r of rows){const tr=document.createElement('tr');tr.innerHTML=`<td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[5]<0?'good':r[5]>0?'bad':''}">${r[3]}</td><td class="${r[5]<0?'good':r[5]>0?'bad':''}">${r[4]}</td>`;tb.appendChild(tr)}
+ const target=Math.max(0,Math.min(200000,+$('targetHouseholds').value||0)),part=Math.max(0,Math.min(100,+$('participationRate').value||0)),subs=Math.round(target*part/100),co2=Math.max(0,+$('co2Factor').value||0);
+ $('subscriberHouseholds').textContent=subs.toLocaleString()+'가구';$('subscriberFormula').textContent=`${Math.round(target).toLocaleString()}가구 × ${part.toFixed(1)}%`;
+ const totBill=billSaving*subs,totEnergy=energySaving*subs,totPeak=peakSaving*subs,totCo2=totEnergy*co2;
+ $('totalBillSaving').textContent=fmtWon(totBill);$('totalBillSaving').className='dv '+(totBill>0?'good':totBill<0?'bad':'');
+ $('totalEnergySaving').textContent=fmtKwh(totEnergy);$('totalEnergySaving').className='dv '+(totEnergy>0?'good':totEnergy<0?'bad':'');
+ $('totalPeakSaving').textContent=fmtPower(totPeak);$('totalPeakSaving').className='dv '+(totPeak>0?'good':totPeak<0?'bad':'');
+ $('totalCo2Saving').textContent=fmtCo2Kg(totCo2);$('totalCo2Saving').className='dv '+(totCo2>0?'good':totCo2<0?'bad':'');
+ const energyNearZero=Math.abs(energyDelta)<1e-7;
+ $('deploymentNote').innerHTML=`2025년 ${x.nCust}개 고객 표본을 가구당 평균으로 환산한 뒤 가입가구수에 선형 확대함. ${energyNearZero?'<b>현재 부하이전은 동일 날짜 내 총 kWh를 보존하므로 전력절감량은 0이며, 고정 연평균 배출계수 기준 CO₂ 절감량도 0임.</b>':'전력사용량 변화에 입력한 CO₂ 배출계수를 곱해 배출량 변화를 산정함.'} CO₂ 계수 기본값 0.4149 kgCO₂/kWh는 2023년 소비단 전력 CO₂ 배출계수 기준이며 사용자가 수정 가능함.`;
+}
+
 function renderCustomer(map,baseKey,scenarioKey){const tb=$('customerTable').querySelector('tbody');tb.innerHTML='';const rows=[...map.entries()].sort((a,b)=>a[0].localeCompare(b[0]));for(const [c,x] of rows){const b=tariffValue(x,baseKey),s=tariffValue(x,scenarioKey),d=s-b,p=b?d/b*100:NaN;const tr=document.createElement('tr');tr.innerHTML=`<td>${c}</td><td>${fmtKwh(x.u)}</td><td>${fmtWon(b)}</td><td>${fmtWon(s)}</td><td class="${d<0?'good':d>0?'bad':''}">${fmtWon(d)}</td><td class="${p<0?'good':p>0?'bad':''}">${fmtPct(p)}</td>`;tb.appendChild(tr)}if(!rows.length)tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#64748b">선택 조건에 해당하는 데이터가 없습니다.</td></tr>'}
 function renderTouBreak(map){const tb=$('touBreakTable').querySelector('tbody');tb.innerHTML='';const ss=['spring','summer','autumn','winter'];for(const s of ss)for(let w=0;w<7;w++){const x=map.get(s+'|'+w);if(!x||!x.u)continue;const tr=document.createElement('tr');tr.innerHTML=`<td>${SN[s]}</td><td>${WN[w]}</td><td>${fmtKwh(x.u)}</td><td>${fmtWon(x.t)}</td><td>${fmtRate(x.t/x.u)}</td>`;tb.appendChild(tr)}if(!tb.children.length)tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#64748b">선택 조건에 해당하는 데이터가 없습니다.</td></tr>'}
 function prepCanvas(id){const c=$(id),rect=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;c.width=Math.max(600,rect.width*dpr);c.height=Math.max(260,rect.height*dpr);const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);return {ctx,w:rect.width,h:rect.height}}
@@ -467,6 +572,10 @@ function setup(){
  renderTariffStrip();updatePriceModeUI();updateShiftUI();
  for(const id of ['year','month','customer','season','weekday','scenarioTariff','discountPct','upliftPct','cosyPriceMode','fixedDiscRate','fixedNormalRate','fixedPeakRate','loadShiftMode','shiftDistribution'])$(id).addEventListener('change',()=>{updateCoverage();updatePriceModeUI();updateShiftUI();calculate()});$('baseTariff').addEventListener('change',()=>{renderTariffStrip();updateCoverage();calculate()});$('discountPct').addEventListener('input',calculate);$('upliftPct').addEventListener('input',calculate);for(const id of ['fixedDiscRate','fixedNormalRate','fixedPeakRate'])$(id).addEventListener('input',calculate);
  const syncShift=(fromSlider=false)=>{if(fromSlider)$('shiftPct').value=(+$('shiftPctSlider').value).toFixed(1);else $('shiftPctSlider').value=Math.max(0,Math.min(100,+$('shiftPct').value||0));calculate()};$('shiftPct').addEventListener('input',()=>syncShift(false));$('shiftPctSlider').addEventListener('input',()=>syncShift(true));$('sourceFromPeak').onclick=()=>{sourceFromCurrentPeak();calculate()};
+ const syncTarget=(fromSlider=false)=>{if(fromSlider)$('targetHouseholds').value=Math.round(+$('targetHouseholdsSlider').value||0);else{const v=Math.max(0,Math.min(200000,+$('targetHouseholds').value||0));$('targetHouseholds').value=Math.round(v);$('targetHouseholdsSlider').value=v}renderDeploymentEffects()};
+ $('targetHouseholds').addEventListener('input',()=>syncTarget(false));$('targetHouseholdsSlider').addEventListener('input',()=>syncTarget(true));
+ const syncPart=(fromSlider=false)=>{if(fromSlider)$('participationRate').value=(+$('participationRateSlider').value||0).toFixed(1);else{const v=Math.max(0,Math.min(100,+$('participationRate').value||0));$('participationRate').value=v.toFixed(1);$('participationRateSlider').value=v}renderDeploymentEffects()};
+ $('participationRate').addEventListener('input',()=>syncPart(false));$('participationRateSlider').addEventListener('input',()=>syncPart(true));$('co2Factor').addEventListener('input',renderDeploymentEffects);
  $('resetScenario').onclick=()=>{$('cosyPriceMode').value='pct';$('discountPct').value='51.0';$('upliftPct').value='50.0';$('fixedDiscRate').value='';$('fixedNormalRate').value='';$('fixedPeakRate').value='';$('loadShiftMode').value='off';$('shiftPct').value='30.0';$('shiftPctSlider').value='30';$('shiftDistribution').value='equal';resetCosyHours();resetSourceHours();renderTariffStrip();updatePriceModeUI();updateShiftUI();calculate()};
  $('exportCsv').onclick=exportCsv;updateCoverage();calculate();
 }
