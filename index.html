@@ -145,6 +145,66 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
  .settings-pane .analysis-settings .controls,.results-pane>.cosy-settings .controls,.results-pane>.shift-settings .shift-controls,.results-pane>.cosy-settings #fixedRateControls{grid-template-columns:1fr!important}
 }
 
+
+/* v10 readability refinements */
+/* 1) Left pane follows the page; no independent scrollbar. */
+.settings-pane{
+  position:static!important;
+  top:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding-right:0!important;
+  scrollbar-width:auto!important;
+}
+
+/* 2) Give the fixed baseline label enough room so tariff names are never clipped. */
+.results-pane>.cosy-settings .tariff-row,
+.results-pane>.shift-settings .tariff-row{
+  grid-template-columns:minmax(168px,190px) minmax(0,1fr)!important;
+  gap:10px;
+}
+.results-pane>.cosy-settings .tariff-row-label,
+.results-pane>.shift-settings .tariff-row-label{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:unset!important;
+  word-break:keep-all;
+  line-height:1.35;
+  min-width:0;
+}
+
+/* 3~4) Result blocks are stacked vertically to maximize usable width. */
+.results-pane .grid.two{
+  grid-template-columns:1fr!important;
+}
+.results-pane .grid.two>.panel{
+  min-width:0;
+  width:100%;
+}
+
+/* Avoid unnecessary horizontal scrollbars in the principal result tables. */
+#summaryTable{min-width:0}
+#touBreakTable{min-width:600px}
+#customerTable{min-width:680px}
+
+@media(max-width:1180px){
+  .results-pane>.cosy-settings .tariff-row,
+  .results-pane>.shift-settings .tariff-row{
+    grid-template-columns:minmax(150px,175px) minmax(0,1fr)!important;
+  }
+}
+@media(max-width:760px){
+  .results-pane>.cosy-settings .tariff-row,
+  .results-pane>.shift-settings .tariff-row{
+    grid-template-columns:1fr!important;
+  }
+  .results-pane>.cosy-settings .tariff-row-label,
+  .results-pane>.shift-settings .tariff-row-label{
+    text-align:left;
+  }
+  #touBreakTable,#customerTable{min-width:620px}
+}
+
 </style>
 </head>
 <body>
