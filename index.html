@@ -50,11 +50,19 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
   <div class="grid two" style="margin-top:14px">
     <div class="panel">
       <div class="statusline"><h2 style="margin:0">히트펌프 전용(Cosy형) 시나리오</h2><span class="badge scenario" id="cosyUseBadge">시나리오 적용 중</span></div>
-      <div class="grid controls" style="grid-template-columns:repeat(4,minmax(130px,1fr))">
-        <div class="field"><label>할인율 (%)</label><input id="discountPct" type="number" min="0" max="100" step="0.1" value="51.0"></div>
-        <div class="field"><label>인상률 (%)</label><input id="upliftPct" type="number" min="0" step="0.1" value="50.0"></div>
+      <div class="grid controls" style="grid-template-columns:repeat(3,minmax(150px,1fr))">
+        <div class="field"><label>요금 설정 방식</label><select id="cosyPriceMode"><option value="pct" selected>비율 조정 (기본)</option><option value="fixed">직접 단가 입력 (원/kWh)</option></select></div>
         <div class="field"><label>할인시간</label><input id="discountHours" disabled></div>
         <div class="field"><label>인상시간</label><input id="peakHours" disabled></div>
+      </div>
+      <div class="grid controls" id="pctRateControls" style="grid-template-columns:repeat(2,minmax(160px,1fr));margin-top:10px">
+        <div class="field"><label>할인율 (%)</label><input id="discountPct" type="number" min="0" max="100" step="0.1" value="51.0"></div>
+        <div class="field"><label>인상률 (%)</label><input id="upliftPct" type="number" min="0" step="0.1" value="50.0"></div>
+      </div>
+      <div class="grid controls" id="fixedRateControls" style="grid-template-columns:repeat(3,minmax(150px,1fr));margin-top:10px;display:none">
+        <div class="field"><label>할인시간 단가 (원/kWh)</label><input id="fixedDiscRate" type="number" min="0" step="0.1" placeholder="직접 입력"></div>
+        <div class="field"><label>일반시간 단가 (원/kWh)</label><input id="fixedNormalRate" type="number" min="0" step="0.1" placeholder="직접 입력"></div>
+        <div class="field"><label>인상시간 단가 (원/kWh)</label><input id="fixedPeakRate" type="number" min="0" step="0.1" placeholder="직접 입력"></div>
       </div>
       <div class="modehint">
         <div class="hourlegend"><span><i class="swatch disc"></i>할인</span><span><i class="swatch normal"></i>일반</span><span><i class="swatch peak"></i>인상</span></div>
@@ -70,7 +78,7 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
           <div class="tariff-strip" id="tariffStrip"></div>
         </div>
       </div>
-      <div class="note" style="margin-top:8px">위 행은 선택한 <b>기준 요금제의 현행 시간대</b>를 고정 표시하고, 아래 행만 클릭하여 변경함. 히트펌프 전용요금은 일반용(갑)Ⅰ 저압의 해당 계절 전력량단가를 기준으로 할인시간 <b id="discMultTxt">49%</b>, 인상시간 <b id="upMultTxt">150%</b>, 일반시간 100%를 적용함.</div>
+      <div class="note" style="margin-top:8px" id="cosyPriceNote">위 행은 선택한 <b>기준 요금제의 현행 시간대</b>를 고정 표시하고, 아래 행만 클릭하여 변경함. <span id="pctPriceNote">비율 조정 방식에서는 일반용(갑)Ⅰ 저압의 해당 계절 전력량단가를 기준으로 할인시간 <b id="discMultTxt">49%</b>, 인상시간 <b id="upMultTxt">150%</b>, 일반시간 100%를 적용함.</span><span id="fixedPriceNote" style="display:none">직접 단가 방식에서는 사용자가 입력한 할인·일반·인상 시간대별 고정단가(원/kWh)를 계절과 관계없이 적용함. 비어 있는 단가는 해당 계절 일반용(저압) 단가로 처리함.</span></div>
     </div>
     <div class="panel">
       <h2>2026년 적용 요금표</h2>
@@ -106,7 +114,7 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
   </div>
 
   <div class="panel" style="margin-top:14px"><h2>분석 기준 및 해석</h2>
-    <div class="note">① 히트펌프 별도계량 사용량만 사용하며 기본요금·기후환경요금·연료비조정요금·부가가치세·전력산업기반기금은 제외함. ② 기준요금제는 주택용 누진제·주택용 TOU·일반용(저압) 중 선택하며, 시나리오 요금제는 세 현행 요금제와 히트펌프 전용요금 중 선택함. ③ 주택용 누진제는 히트펌프 사용량을 별도 주택용 계량으로 가정한 환산 전력량요금이며 실제 가구 전체 전기요금과는 다름. ④ 요일 필터 적용 시 주택용 누진요금은 고객·월별 전체 히트펌프 사용량으로 산정한 실효 전력량단가를 선택 요일 사용량에 귀속함. 주택용 TOU의 월 1,000kWh 초과분도 월 사용량 비중에 따라 시간대별로 귀속함. ⑤ 결측 시간값은 사용량 및 요금 산정에서 제외함. ⑥ 히트펌프 전용요금은 일반용(갑)Ⅰ 저압 단가를 기준으로 사용자가 지정한 시간별 할인·인상률만 적용하며 부하이전은 발생하지 않음.</div>
+    <div class="note">① 히트펌프 별도계량 사용량만 사용하며 기본요금·기후환경요금·연료비조정요금·부가가치세·전력산업기반기금은 제외함. ② 기준요금제는 주택용 누진제·주택용 TOU·일반용(저압) 중 선택하며, 시나리오 요금제는 세 현행 요금제와 히트펌프 전용요금 중 선택함. ③ 주택용 누진제는 히트펌프 사용량을 별도 주택용 계량으로 가정한 환산 전력량요금이며 실제 가구 전체 전기요금과는 다름. ④ 요일 필터 적용 시 주택용 누진요금은 고객·월별 전체 히트펌프 사용량으로 산정한 실효 전력량단가를 선택 요일 사용량에 귀속함. 주택용 TOU의 월 1,000kWh 초과분도 월 사용량 비중에 따라 시간대별로 귀속함. ⑤ 결측 시간값은 사용량 및 요금 산정에서 제외함. ⑥ 히트펌프 전용요금은 비율 조정 또는 직접 단가 입력 방식 중 하나를 선택할 수 있으며, 직접 단가 방식에서는 할인·일반·인상 시간대별 원/kWh 고정단가를 적용함. 두 방식 모두 부하이전은 발생하지 않음.</div>
   </div>
   <footer>요금표 시점: 2026년 현행 한전 전력량요금 기준. 데이터: <span id="sourceFile"></span>. 이 도구는 정책 시나리오 비교용 분석 시스템이며 실제 청구서 재현용이 아님.</footer>
 </div>
@@ -131,6 +139,9 @@ function touRate(m,h){const shoulder=[3,4,5,9,10].includes(m);let r=shoulder?[12
 function isDiscountHour(h){return cosyHours[h]==='disc'}
 function isPeakHour(h){return cosyHours[h]==='peak'}
 function cosyMult(h){const d=Math.max(0,Math.min(100,+$('discountPct').value||0));const u=Math.max(0,+$('upliftPct').value||0);return isDiscountHour(h)?1-d/100:isPeakHour(h)?1+u/100:1}
+function nonnegInput(id,fallback){const raw=$(id).value.trim();if(raw==='')return fallback;const v=Number(raw);return Number.isFinite(v)&&v>=0?v:fallback}
+function cosyRate(m,h){const gr=generalRate(m);if($('cosyPriceMode').value==='fixed'){if(isDiscountHour(h))return nonnegInput('fixedDiscRate',gr);if(isPeakHour(h))return nonnegInput('fixedPeakRate',gr);return nonnegInput('fixedNormalRate',gr)}return gr*cosyMult(h)}
+function updatePriceModeUI(){const fixed=$('cosyPriceMode').value==='fixed';$('pctRateControls').style.display=fixed?'none':'grid';$('fixedRateControls').style.display=fixed?'grid':'none';$('pctPriceNote').style.display=fixed?'none':'inline';$('fixedPriceNote').style.display=fixed?'inline':'none';$('peakHours').value=summarizeHours('peak')}
 function progBill(m,kwh){const summer=[7,8].includes(m),b1=summer?300:200,b2=summer?450:400;let x=kwh,b=0,a=Math.min(x,b1);b+=a*120;x-=a;if(x>0){a=Math.min(x,b2-b1);b+=a*214.6;x-=a}if(x>0){if([1,2,7,8,12].includes(m)){a=Math.min(x,Math.max(0,1000-b2));b+=a*307.3;x-=a;if(x>0)b+=x*736.2}else b+=x*307.3}return b}
 function matchFilters(r, ignoreWeekday=false){const [c,y,m,d,w]=r;const Y=$('year').value,M=$('month').value,C=$('customer').value,S=$('season').value,W=$('weekday').value;if(Y!=='all'&&+Y!==y)return false;if(M!=='all'&&+M!==m)return false;if(C!=='all'&&C!==c)return false;if(S!=='all'&&seasonOf(m)!==S)return false;if(!ignoreWeekday&&W!=='all'){if(W==='weekday'&&w>4)return false;if(W==='weekend'&&w<5)return false;if(/^[0-6]$/.test(W)&&+W!==w)return false}return true}
 function buildMonthParams(){const totals=new Map();for(const r of RAW){if(!matchFilters(r,true))continue;const key=r[0]+'|'+r[1]+'|'+r[2];let u=totals.get(key)||0;for(let h=0;h<24;h++){const v=r[5+h];if(v!=null)u+=v}totals.set(key,u)}const progEff=new Map(),touSuperFrac=new Map();for(const [k,u] of totals){const m=+k.split('|')[2];progEff.set(k,u>0?progBill(m,u)/u:0);const superMonth=[1,2,6,7,8,11,12].includes(m);touSuperFrac.set(k,superMonth&&u>1000?(u-1000)/u:0)}return {progEff,touSuperFrac}}
@@ -145,13 +156,13 @@ function calculate(){
  const {progEff,touSuperFrac}=buildMonthParams();
  let total={u:0,g:0,p:0,t:0,o:0,n:0,missing:0};const byMonth={};const byCust=new Map();const byHour=Array.from({length:24},()=>({u:0,n:0}));const bySW=new Map();
  for(const r of RAW){if(!matchFilters(r))continue;const [c,y,m,d,w]=r;const keyCM=c+'|'+y+'|'+m,pe=progEff.get(keyCM)||0,tf=touSuperFrac.get(keyCM)||0,gr=generalRate(m);if(!byMonth[m])byMonth[m]={g:0,p:0,t:0,o:0,u:0};if(!byCust.has(c))byCust.set(c,{u:0,g:0,p:0,t:0,o:0});const cr=byCust.get(c);const sk=seasonOf(m)+'|'+w;if(!bySW.has(sk))bySW.set(sk,{u:0,t:0});const sw=bySW.get(sk);
-   for(let h=0;h<24;h++){const v=r[5+h];if(v==null){total.missing++;continue}const g=v*gr,p=v*pe,t=v*((1-tf)*touRate(m,h)+tf*736.2),o=v*gr*cosyMult(h);total.u+=v;total.g+=g;total.p+=p;total.t+=t;total.o+=o;total.n++;byMonth[m].u+=v;byMonth[m].g+=g;byMonth[m].p+=p;byMonth[m].t+=t;byMonth[m].o+=o;cr.u+=v;cr.g+=g;cr.p+=p;cr.t+=t;cr.o+=o;byHour[h].u+=v;byHour[h].n++;sw.u+=v;sw.t+=t}
+   for(let h=0;h<24;h++){const v=r[5+h];if(v==null){total.missing++;continue}const g=v*gr,p=v*pe,t=v*((1-tf)*touRate(m,h)+tf*736.2),o=v*cosyRate(m,h);total.u+=v;total.g+=g;total.p+=p;total.t+=t;total.o+=o;total.n++;byMonth[m].u+=v;byMonth[m].g+=g;byMonth[m].p+=p;byMonth[m].t+=t;byMonth[m].o+=o;cr.u+=v;cr.g+=g;cr.p+=p;cr.t+=t;cr.o+=o;byHour[h].u+=v;byHour[h].n++;sw.u+=v;sw.t+=t}
  }
  render(total,byMonth,byCust,byHour,bySW);
 }
 function render(total,byMonth,byCust,byHour,bySW){
  const baseKey=$('baseTariff').value,scenarioKey=$('scenarioTariff').value,base=tariffValue(total,baseKey),scenario=tariffValue(total,scenarioKey);
- const custCount=byCust.size,d=+($('discountPct').value||0),u=+($('upliftPct').value||0);$('discMultTxt').textContent=(100-d).toFixed(1)+'%';$('upMultTxt').textContent=(100+u).toFixed(1)+'%';
+ const custCount=byCust.size,d=+($('discountPct').value||0),u=+($('upliftPct').value||0);$('discMultTxt').textContent=(100-d).toFixed(1)+'%';$('upMultTxt').textContent=(100+u).toFixed(1)+'%';updatePriceModeUI();
  $('baseNameTop').textContent=TARIFF_NAMES[baseKey];$('scenarioNameTop').textContent=TARIFF_NAMES[scenarioKey];$('kBaseLabel').textContent='기준 · '+TARIFF_NAMES[baseKey];$('kScenarioLabel').textContent='시나리오 · '+TARIFF_NAMES[scenarioKey];
  $('cosyUseBadge').textContent=scenarioKey==='o'?'시나리오 적용 중':'HP 전용 선택 시 적용';$('cosyUseBadge').className='badge '+(scenarioKey==='o'?'scenario':'off');
  $('kUsage').textContent=fmtKwh(total.u);$('kCust').textContent=custCount+'개 고객 · 관측 '+total.n.toLocaleString()+'시간';$('kBase').textContent=fmtWon(base);$('kScenario').textContent=fmtWon(scenario);
@@ -167,9 +178,9 @@ function drawHourly(byHour,scenarioKey){const {ctx,w,h}=prepCanvas('hourlyChart'
 function drawMonthly(byMonth,baseKey,scenarioKey){const {ctx,w,h}=prepCanvas('monthlyChart'),pad={l:58,r:15,t:18,b:36},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;ctx.clearRect(0,0,w,h);const months=Array.from({length:12},(_,i)=>i+1),series=[[baseKey,COLORS[baseKey]],[scenarioKey,COLORS[scenarioKey]]];let mx=1;for(const m of months)for(const [k]of series)mx=Math.max(mx,(byMonth[m]?.[k]||0));mx*=1.1;ctx.strokeStyle='#e1e6ee';ctx.font='11px Arial';ctx.fillStyle='#64748b';for(let i=0;i<=4;i++){let y=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.fillText(Math.round(mx*(1-i/4)/10000)+'만',6,y+4)}const groupW=cw/12,barW=Math.min(18,groupW/3);months.forEach((m,mi)=>{series.forEach(([k,col],si)=>{let v=byMonth[m]?.[k]||0,bh=ch*v/mx,x=pad.l+mi*groupW+(groupW-2*barW)/2+si*barW;ctx.fillStyle=col;ctx.fillRect(x,pad.t+ch-bh,barW-2,bh)});ctx.fillStyle='#64748b';ctx.fillText(m+'월',pad.l+mi*groupW+groupW/2-8,h-12)});$('legendBase').textContent='기준 · '+TARIFF_NAMES[baseKey];$('legendBase').style.color=COLORS[baseKey];$('legendScenario').textContent='시나리오 · '+TARIFF_NAMES[scenarioKey];$('legendScenario').style.color=COLORS[scenarioKey]}
 function setup(){
  const y=$('year');y.innerHTML='<option value="all">전체 (2022~2026)</option>'+Object.keys(META.years).map(v=>`<option value="${v}" ${v==='2025'?'selected':''}>${v}년${v==='2026'?' (8/5까지)':''}</option>`).join('');for(let m=1;m<=12;m++)$('month').insertAdjacentHTML('beforeend',`<option value="${m}">${m}월</option>`);for(const c of META.customers)$('customer').insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`);$('sourceFile').textContent=META.source_file;$('dataStatus').textContent=`${META.records.toLocaleString()}일 · ${META.customers.length}개 고객 · 전체 관측률 ${META.coverage}%`;
- renderTariffStrip();
- for(const id of ['year','month','customer','season','weekday','scenarioTariff','discountPct','upliftPct'])$(id).addEventListener('change',()=>{updateCoverage();calculate()});$('baseTariff').addEventListener('change',()=>{renderTariffStrip();updateCoverage();calculate()});$('discountPct').addEventListener('input',calculate);$('upliftPct').addEventListener('input',calculate);
- $('resetScenario').onclick=()=>{$('discountPct').value='51.0';$('upliftPct').value='50.0';resetCosyHours();renderTariffStrip();calculate()};
+ renderTariffStrip();updatePriceModeUI();
+ for(const id of ['year','month','customer','season','weekday','scenarioTariff','discountPct','upliftPct','cosyPriceMode','fixedDiscRate','fixedNormalRate','fixedPeakRate'])$(id).addEventListener('change',()=>{updateCoverage();updatePriceModeUI();calculate()});$('baseTariff').addEventListener('change',()=>{renderTariffStrip();updateCoverage();calculate()});$('discountPct').addEventListener('input',calculate);$('upliftPct').addEventListener('input',calculate);for(const id of ['fixedDiscRate','fixedNormalRate','fixedPeakRate'])$(id).addEventListener('input',calculate);
+ $('resetScenario').onclick=()=>{$('cosyPriceMode').value='pct';$('discountPct').value='51.0';$('upliftPct').value='50.0';$('fixedDiscRate').value='';$('fixedNormalRate').value='';$('fixedPeakRate').value='';resetCosyHours();renderTariffStrip();updatePriceModeUI();calculate()};
  $('exportCsv').onclick=exportCsv;updateCoverage();calculate();
 }
 function updateCoverage(){const Y=$('year').value;if(Y==='all'){$('coverageNote').innerHTML=`전체 데이터는 ${META.customers.length}개 고객, ${META.records.toLocaleString()} 고객-일 관측치임. 연도별 표본 구성이 달라 연도 간 단순 총액 비교 시 고객 수 차이에 유의.`;return}const x=META.years[Y];let warn='';if(Y==='2022')warn=' <span class="warn">2022년은 7개 고객만 존재하며 일부 고객-일 관측이 불완전함.</span>';if(Y==='2023')warn=' <span class="warn">일부 고객의 4월 5~11일 관측이 누락되어 있음.</span>';if(Y==='2024')warn=' <span class="warn">일부 고객은 2월 중순부터 관측됨.</span>';if(Y==='2026')warn=' <span class="warn">2026년은 8월 5일까지의 부분연도임.</span>';$('coverageNote').innerHTML=`${Y}년: ${x.customers}개 고객 · ${x.min}~${x.max} · 시간값 관측률 ${x.coverage}%.${warn}`}
