@@ -240,6 +240,8 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 @media(max-width:1180px){.deployment-controls{grid-template-columns:1fr 1fr}.deployment-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.deployment-controls,.household-summary,.deployment-kpis{grid-template-columns:1fr}}
 
+
+.interpret-list{display:grid;gap:8px}.interpret-item{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--soft);line-height:1.55}.interpret-item b{margin-right:5px}.zero-meaning{margin-top:6px;font-size:12px;line-height:1.45;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -372,7 +374,7 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <div class="deployment-kpis">
 <div class="deployment-card"><div class="dl">예상 가입가구</div><div class="dv" id="subscriberHouseholds">-</div><div class="ds" id="subscriberFormula">목표 보급가구 × 가입률</div></div>
 <div class="deployment-card"><div class="dl">가입자 총 요금 절감액</div><div class="dv" id="totalBillSaving">-</div><div class="ds">연간 · 가구당 효과 선형 확대</div></div>
-<div class="deployment-card"><div class="dl">가입자 총 전력절감량</div><div class="dv" id="totalEnergySaving">-</div><div class="ds">연간 사용량 감소분 · 순수 부하이전이면 0</div></div>
+<div class="deployment-card"><div class="dl">가입자 총 전력절감량</div><div class="dv" id="totalEnergySaving">-</div><div class="ds">연간 사용량 감소분</div><div class="zero-meaning">0kWh이면 에너지 절감은 없고, 동일 사용량의 시간대 이동만 발생한 것으로 해석</div></div>
 <div class="deployment-card"><div class="dl">가입자 총 피크 절감량</div><div class="dv" id="totalPeakSaving">-</div><div class="ds">2025 표본의 동시피크 효과 선형 확대</div></div>
 <div class="deployment-card"><div class="dl">CO₂ 절감량</div><div class="dv" id="totalCo2Saving">-</div><div class="ds">전력절감량 × 배출계수</div></div>
 </div>
@@ -382,7 +384,21 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <div class="panel"><h2>주택용 TOU · 계절/요일별 분석</h2><div class="note" style="margin-bottom:8px">제주 주택용 TOU의 시간대 구분은 요일에 따라 달라지지 않음. 아래 표는 동일 요금체계를 실제 사용량 기준으로 계절·요일별 분해한 결과임.</div><div class="tablewrap" style="max-height:420px"><table id="touBreakTable"><thead><tr><th>계절</th><th>요일</th><th>사용량</th><th>TOU 요금</th><th>평균단가</th></tr></thead><tbody></tbody></table></div></div>
 <div class="panel"><h2>고객별 기준안·시나리오 비교</h2><div class="actions" style="margin-bottom:9px"><button id="exportCsv">분석결과 CSV 내보내기</button></div><div class="tablewrap" style="max-height:420px"><table id="customerTable"><thead><tr><th>고객ID</th><th>사용량</th><th>기준요금</th><th>시나리오요금</th><th>증감액</th><th>증감률</th></tr></thead><tbody></tbody></table></div></div>
 </div><div class="panel"><h2>분석 기준 및 해석</h2>
-<div class="note">① 히트펌프 별도계량 사용량만 사용하며 기본요금·기후환경요금·연료비조정요금·부가가치세·전력산업기반기금은 제외함. ② 기준요금제는 주택용 누진제·주택용 TOU·일반용(저압) 중 선택하며, 시나리오 요금제는 세 현행 요금제와 히트펌프 전용요금 중 선택함. ③ 주택용 누진제는 히트펌프 사용량을 별도 주택용 계량으로 가정한 환산 전력량요금이며 실제 가구 전체 전기요금과는 다름. ④ 요일 필터 적용 시 주택용 누진요금은 고객·월별 전체 히트펌프 사용량으로 산정한 실효 전력량단가를 선택 요일 사용량에 귀속함. 주택용 TOU의 월 1,000kWh 초과분도 월 사용량 비중에 따라 시간대별로 귀속함. ⑤ 결측 시간값은 사용량 및 요금 산정에서 제외함. ⑥ 히트펌프 전용요금은 비율 조정 또는 직접 단가 입력 방식 중 하나를 선택할 수 있음. ⑦ 부하이전 적용 시 선택한 원천 시간대 사용량의 설정 비율을 같은 고객·같은 날짜의 할인시간대로 이동하며, 균등배분 또는 기존 할인시간 사용패턴 비례배분을 선택할 수 있음. 일 사용량 총계는 보존하며 날짜 간 이동은 허용하지 않음. 총 이전량은 원천시간 사용량×이전율로 먼저 확정되므로 배분방식 변경만으로는 변하지 않음. ⑧ 부하이전은 히트펌프 전용요금의 시나리오 사용패턴과 요금에 반영되며 다른 현행 요금제 계산은 원래 사용패턴을 유지함. ⑨ 시간대별 사용량 변화는 주택용 TOU 시간대 기준(경부하 22~08시, 중간부하 08~16시, 최대부하 16~22시)의 관측시간당 평균 kWh로 산정함. ⑩ 요금효과 분해는 단가효과(기존 사용패턴에 시나리오 단가만 적용한 요금−기준요금)와 수요이전 효과(부하이전 후 시나리오요금−기존 사용패턴 기준 시나리오요금)로 구분하며 두 효과의 합은 총 요금변화와 일치함. ⑪ 가구당 연간 효과와 보급 확대 효과는 2025년 전체 16개 고객을 고정 표본으로 사용하며, 가구당 피크는 동일 시각의 표본 평균부하 중 연중 최대값(동시피크)으로 산정함. ⑫ 목표 보급가구수×가입률을 예상 가입가구로 하여 가구당 효과를 선형 확대함. 현재 부하이전은 총 kWh를 보존하므로 전력절감량과 고정 연평균 배출계수 기준 CO₂ 절감량은 원칙적으로 0이며, 시간대별 한계배출계수 효과는 포함하지 않음.</div>
+<div class="interpret-list">
+<div class="interpret-item"><b>① 분석대상</b> 히트펌프 별도계량 사용량만 사용하며 기본요금·기후환경요금·연료비조정요금·부가가치세·전력산업기반기금은 제외함.</div>
+<div class="interpret-item"><b>② 요금제 선택</b> 기준요금제는 주택용 누진제·주택용 TOU·일반용(저압) 중 선택하며, 시나리오 요금제는 세 현행 요금제와 히트펌프 전용요금 중 선택함.</div>
+<div class="interpret-item"><b>③ 주택용 누진제 해석</b> 히트펌프 사용량을 별도 주택용 계량으로 가정한 환산 전력량요금이며 실제 가구 전체 전기요금과는 다름.</div>
+<div class="interpret-item"><b>④ 요일 필터 처리</b> 주택용 누진요금은 고객·월별 전체 히트펌프 사용량으로 산정한 실효 전력량단가를 선택 요일 사용량에 귀속함. 주택용 TOU의 월 1,000kWh 초과분도 월 사용량 비중에 따라 시간대별로 귀속함.</div>
+<div class="interpret-item"><b>⑤ 결측값 처리</b> 결측 시간값은 사용량 및 요금 산정에서 제외함.</div>
+<div class="interpret-item"><b>⑥ 히트펌프 전용요금</b> 비율 조정 또는 직접 단가 입력 방식 중 하나를 선택할 수 있음.</div>
+<div class="interpret-item"><b>⑦ 부하이전</b> 선택한 원천 시간대 사용량의 설정 비율을 같은 고객·같은 날짜의 할인시간대로 이동함. 균등배분 또는 기존 할인시간 사용패턴 비례배분을 선택할 수 있으며, 일 사용량 총계는 보존하고 날짜 간 이동은 허용하지 않음. 총 이전량은 원천시간 사용량×이전율로 먼저 확정되므로 배분방식 변경만으로는 변하지 않음.</div>
+<div class="interpret-item"><b>⑧ 부하이전 적용범위</b> 부하이전은 히트펌프 전용요금의 시나리오 사용패턴과 요금에 반영되며 다른 현행 요금제 계산은 원래 사용패턴을 유지함.</div>
+<div class="interpret-item"><b>⑨ 시간대별 사용량 변화</b> 주택용 TOU 시간대 기준인 경부하 22~08시, 중간부하 08~16시, 최대부하 16~22시의 관측시간당 평균 kWh로 산정함.</div>
+<div class="interpret-item"><b>⑩ 요금효과 분해</b> 단가효과는 기존 사용패턴에 시나리오 단가만 적용한 요금−기준요금, 수요이전 효과는 부하이전 후 시나리오요금−기존 사용패턴 기준 시나리오요금으로 산정하며 두 효과의 합은 총 요금변화와 일치함.</div>
+<div class="interpret-item"><b>⑪ 가구당 연간 효과</b> 2025년 전체 16개 고객을 고정 표본으로 사용하며, 가구당 피크는 동일 시각의 표본 평균부하 중 연중 최대값인 동시피크로 산정함.</div>
+<div class="interpret-item"><b>⑫ 보급 확대 효과</b> 목표 보급가구수×가입률을 예상 가입가구로 하여 가구당 효과를 선형 확대함.</div>
+<div class="interpret-item"><b>⑬ 전력절감량·CO₂ 해석</b> 현재 부하이전은 총 kWh를 보존하는 시간대 이동 모델이므로 전력절감량은 원칙적으로 0임. 따라서 고정 연평균 배출계수를 사용하는 현재 방식에서는 CO₂ 절감량도 0이 됨. 이는 절감효과가 없다는 뜻이 아니라 요금·피크 효과는 발생하되 총 에너지사용량 자체는 줄지 않았다는 의미임. 시간대별 한계배출계수에 따른 배출저감 효과는 현재 포함하지 않음.</div>
+</div>
 </div></main></div>
 
 
@@ -559,7 +575,7 @@ function renderDeploymentEffects(){
  $('totalPeakSaving').textContent=fmtPower(totPeak);$('totalPeakSaving').className='dv '+(totPeak>0?'good':totPeak<0?'bad':'');
  $('totalCo2Saving').textContent=fmtCo2Kg(totCo2);$('totalCo2Saving').className='dv '+(totCo2>0?'good':totCo2<0?'bad':'');
  const energyNearZero=Math.abs(energyDelta)<1e-7;
- $('deploymentNote').innerHTML=`2025년 ${x.nCust}개 고객 표본을 가구당 평균으로 환산한 뒤 가입가구수에 선형 확대함. ${energyNearZero?'<b>현재 부하이전은 동일 날짜 내 총 kWh를 보존하므로 전력절감량은 0이며, 고정 연평균 배출계수 기준 CO₂ 절감량도 0임.</b>':'전력사용량 변화에 입력한 CO₂ 배출계수를 곱해 배출량 변화를 산정함.'} CO₂ 계수 기본값 0.4149 kgCO₂/kWh는 2023년 소비단 전력 CO₂ 배출계수 기준이며 사용자가 수정 가능함.`;
+ $('deploymentNote').innerHTML=`2025년 ${x.nCust}개 고객 표본을 가구당 평균으로 환산한 뒤 가입가구수에 선형 확대함. ${energyNearZero?'<b>전력절감량 0kWh는 오류가 아니라, 같은 전력량을 다른 시간대로 이동했을 뿐 총 에너지사용량은 줄지 않았다는 의미임. 요금 절감과 피크 변화는 별도로 발생할 수 있으며, 고정 연평균 배출계수 기준 CO₂ 절감량도 0임.</b>':'전력사용량 변화에 입력한 CO₂ 배출계수를 곱해 배출량 변화를 산정함.'} CO₂ 계수 기본값 0.4149 kgCO₂/kWh는 2023년 소비단 전력 CO₂ 배출계수 기준이며 사용자가 수정 가능함.`;
 }
 
 function renderCustomer(map,baseKey,scenarioKey){const tb=$('customerTable').querySelector('tbody');tb.innerHTML='';const rows=[...map.entries()].sort((a,b)=>a[0].localeCompare(b[0]));for(const [c,x] of rows){const b=tariffValue(x,baseKey),s=tariffValue(x,scenarioKey),d=s-b,p=b?d/b*100:NaN;const tr=document.createElement('tr');tr.innerHTML=`<td>${c}</td><td>${fmtKwh(x.u)}</td><td>${fmtWon(b)}</td><td>${fmtWon(s)}</td><td class="${d<0?'good':d>0?'bad':''}">${fmtWon(d)}</td><td class="${p<0?'good':p>0?'bad':''}">${fmtPct(p)}</td>`;tb.appendChild(tr)}if(!rows.length)tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#64748b">선택 조건에 해당하는 데이터가 없습니다.</td></tr>'}
