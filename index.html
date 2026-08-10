@@ -99,11 +99,57 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
  .settings-pane .analysis-settings .field:nth-child(7),.settings-pane .cosy-settings #fixedRateControls .field:last-child{grid-column:auto}
  .results-pane .kpis{grid-template-columns:1fr}
 }
+
+/* v9 layout: common analysis inputs left, scenario controls + results right */
+.dashboard-shell{grid-template-columns:minmax(300px,25%) minmax(0,1fr);gap:16px}
+.settings-pane{max-height:calc(100vh - 24px)}
+.dashboard-footer{margin-left:calc(25% + 16px)}
+.results-pane>.cosy-settings,.results-pane>.shift-settings{width:100%;min-width:0;padding:15px 16px}
+.results-pane>.cosy-settings .controls{grid-template-columns:repeat(4,minmax(0,1fr))}
+.results-pane>.cosy-settings #fixedRateControls{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.results-pane>.cosy-settings #fixedRateControls .field:last-child{grid-column:auto}
+.results-pane>.cosy-settings .tariff-row,.results-pane>.shift-settings .tariff-row{grid-template-columns:110px minmax(0,1fr)}
+.results-pane>.cosy-settings .tariff-strip,.results-pane>.shift-settings .tariff-strip{grid-template-columns:repeat(24,minmax(0,1fr));gap:2px}
+.results-pane>.cosy-settings .hour{height:42px}
+.results-pane>.cosy-settings .hour .hn{font-size:9px}
+.results-pane>.cosy-settings .hour .hs{font-size:8px;display:block}
+.results-pane>.shift-settings .shift-controls{grid-template-columns:repeat(4,minmax(0,1fr))}
+.results-pane>.shift-settings .sliderpair{grid-template-columns:92px minmax(0,1fr)}
+.results-pane>.shift-settings .source-hour{height:37px;font-size:9px}
+.results-pane>.shift-settings .shift-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+.analysis-result-heading{margin-top:2px;padding-top:4px;border-top:1px solid #e2e8f0}
+.settings-pane .analysis-settings .controls{grid-template-columns:1fr}
+.settings-pane .analysis-settings .field:nth-child(7){grid-column:auto}
+.settings-pane .rategrid{grid-template-columns:1fr}
+@media(max-width:1280px){
+ .dashboard-shell{grid-template-columns:minmax(290px,28%) minmax(0,1fr)}
+ .dashboard-footer{margin-left:calc(28% + 16px)}
+ .results-pane>.cosy-settings .controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .results-pane>.shift-settings .shift-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .results-pane>.cosy-settings .hour .hs{display:none}
+}
+@media(max-width:980px){
+ .dashboard-shell{grid-template-columns:1fr}
+ .dashboard-footer{margin-left:0}
+ .settings-pane .analysis-settings .controls{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .results-pane>.cosy-settings .controls{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .results-pane>.shift-settings .shift-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .settings-pane .analysis-settings .controls,.results-pane>.cosy-settings .controls,.results-pane>.shift-settings .shift-controls{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .results-pane>.cosy-settings .tariff-row,.results-pane>.shift-settings .tariff-row{grid-template-columns:1fr;gap:4px}
+ .results-pane>.cosy-settings .tariff-row-label,.results-pane>.shift-settings .tariff-row-label{text-align:left}
+ .results-pane>.shift-settings .shift-summary{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+ .settings-pane .analysis-settings .controls,.results-pane>.cosy-settings .controls,.results-pane>.shift-settings .shift-controls,.results-pane>.cosy-settings #fixedRateControls{grid-template-columns:1fr!important}
+}
+
 </style>
 </head>
 <body>
 <header><h1>히트펌프 요금분석 시뮬레이터(PRAS - Heatpump)</h1><p>Pricing and Revenue Analysis Simulator - Heatpump</p></header>
-<div class="wrap"><div class="dashboard-shell"><aside class="settings-pane"><div class="pane-heading">분석 및 시나리오 설정</div><div class="panel settings-card analysis-settings">
+<div class="wrap"><div class="dashboard-shell"><aside class="settings-pane"><div class="pane-heading">분석 조건</div><div class="panel settings-card analysis-settings">
 <div class="statusline"><div><span class="badge off" id="loadShiftBadge">부하이전 미적용</span> <span class="badge">전력량요금만 비교</span></div><div class="mini" id="dataStatus"></div></div>
 <div class="grid controls">
 <div class="field"><label>분석연도</label><select id="year"></select></div>
@@ -121,7 +167,16 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 </div>
 <div class="note" id="coverageNote" style="margin-top:10px"></div>
 <div class="note" style="margin-top:4px">모든 요금제는 <b>2026년 현행 전력량요금표</b>를 적용하며, 선택한 기준 요금제를 중심으로 시나리오 증감액·증감률을 산정함.</div>
-</div><div class="panel settings-card cosy-settings">
+</div><div class="panel settings-card rates-settings">
+<h2>2026년 적용 요금표</h2>
+<div class="rategrid">
+<div class="rates"><b>일반용(갑)Ⅰ 저압</b><br/>여름 132.4원/kWh<br/>봄·가을 91.9원/kWh<br/>겨울 119.0원/kWh</div>
+<div class="rates"><b>제주 주택용 TOU</b><br/>봄·가을 125.8 / 153.8 / 172.4<br/>여름·겨울 138.7 / 184.7 / 220.5<br/><span class="mini">경부하 / 중간부하 / 최대부하 · 해당 월 1,000kWh 초과분 별도 반영</span></div>
+</div>
+<div class="sep"></div>
+<div class="rates"><b>주택용 저압 누진 전력량요금</b>　120.0 / 214.6 / 307.3원/kWh <span class="mini">(하계 300·450kWh, 기타 200·400kWh 구간)</span></div>
+<div class="actions" style="margin-top:12px"><button id="resetScenario">Cosy 기본 설정으로 초기화</button></div>
+</div></aside><main class="results-pane"><div class="pane-heading results-heading">시나리오 설정</div><div class="panel settings-card cosy-settings">
 <div class="statusline"><h2 style="margin:0">히트펌프 전용(Cosy형) 시나리오</h2><span class="badge scenario" id="cosyUseBadge">시나리오 적용 중</span></div>
 <div class="grid controls" style="grid-template-columns:repeat(3,minmax(150px,1fr))">
 <div class="field"><label>요금 설정 방식</label><select id="cosyPriceMode"><option selected="" value="pct">비율 조정 (기본)</option><option value="fixed">직접 단가 입력 (원/kWh)</option></select></div>
@@ -176,16 +231,7 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <div class="shift-stat"><div class="sl">원천시간 사용량 중 이전 비중</div><div class="sv" id="shiftRateDisplay">0%</div></div>
 <div class="shift-stat"><div class="sl">배분 방식</div><div class="sv" id="shiftDistDisplay">부하이전 없음</div></div>
 </div>
-</div><div class="panel settings-card rates-settings">
-<h2>2026년 적용 요금표</h2>
-<div class="rategrid">
-<div class="rates"><b>일반용(갑)Ⅰ 저압</b><br/>여름 132.4원/kWh<br/>봄·가을 91.9원/kWh<br/>겨울 119.0원/kWh</div>
-<div class="rates"><b>제주 주택용 TOU</b><br/>봄·가을 125.8 / 153.8 / 172.4<br/>여름·겨울 138.7 / 184.7 / 220.5<br/><span class="mini">경부하 / 중간부하 / 최대부하 · 해당 월 1,000kWh 초과분 별도 반영</span></div>
-</div>
-<div class="sep"></div>
-<div class="rates"><b>주택용 저압 누진 전력량요금</b>　120.0 / 214.6 / 307.3원/kWh <span class="mini">(하계 300·450kWh, 기타 200·400kWh 구간)</span></div>
-<div class="actions" style="margin-top:12px"><button id="resetScenario">Cosy 기본 설정으로 초기화</button></div>
-</div></aside><main class="results-pane"><div class="pane-heading results-heading">분석 결과</div><div class="grid kpis">
+</div><div class="pane-heading results-heading analysis-result-heading">분석 결과</div><div class="grid kpis">
 <div class="panel kpi"><div class="lbl">분석 사용량</div><div class="val" id="kUsage">-</div><div class="sub" id="kCust">-</div></div>
 <div class="panel kpi"><div class="lbl" id="kBaseLabel">기준 요금제</div><div class="val" id="kBase">-</div><div class="sub">기준안 전력량요금</div></div>
 <div class="panel kpi"><div class="lbl" id="kScenarioLabel">시나리오 요금제</div><div class="val" id="kScenario">-</div><div class="sub">시나리오 전력량요금</div></div>
