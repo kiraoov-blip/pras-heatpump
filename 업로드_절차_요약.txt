@@ -1,0 +1,15 @@
+GitHub에 올릴 파일
+=================
+
+1) index.html   ← 필수
+2) .nojekyll    ← 권장
+3) README.md    ← 설명서(선택)
+
+가장 간단한 절차
+----------------
+GitHub 저장소 생성 → Add file → Upload files → 위 3개 파일 업로드 → Commit changes
+→ Settings → Pages → Source: Deploy from a branch → main / (root) → Save
+
+주의
+----
+고객번호는 HP01~HP16으로 익명화했지만 시간대별 사용량은 index.html 안에 포함되어 있습니다.
