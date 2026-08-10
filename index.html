@@ -205,6 +205,24 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
   #touBreakTable,#customerTable{min-width:620px}
 }
 
+
+/* v12: TOU band labels + load-band summary + bill-effect decomposition */
+.hour .tb{font-size:7px;line-height:1;font-weight:800;opacity:.82;margin-top:1px}
+.results-pane>.cosy-settings .hour{height:48px!important}
+.results-pane>.cosy-settings .hour .tb{display:block}
+.effect-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:10px}
+.effect-stat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:10px 11px;min-width:0}
+.effect-stat .el{font-size:11px;color:#64748b}
+.effect-stat .ev{font-size:16px;font-weight:800;margin-top:3px;white-space:nowrap}
+.effect-stat .es{font-size:10px;color:#94a3b8;margin-top:2px}
+#loadBandTable{min-width:0}
+#loadBandTable th,#loadBandTable td{text-align:right}
+#loadBandTable th:first-child,#loadBandTable td:first-child,#loadBandTable th:nth-child(2),#loadBandTable td:nth-child(2){text-align:left}
+.effect-note{margin-top:8px}
+@media(max-width:1280px){.results-pane>.cosy-settings .hour{height:44px!important}.results-pane>.cosy-settings .hour .tb{font-size:7px}}
+@media(max-width:760px){.results-pane>.cosy-settings .hour{height:36px!important}.results-pane>.cosy-settings .hour .tb{font-size:6px}.effect-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.effect-summary{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -304,11 +322,26 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 </div><div class="grid two">
 <div class="panel"><h2>요금제별 비교</h2><div class="tablewrap"><table id="summaryTable"><thead><tr><th>요금제</th><th>전력량요금</th><th>기준 대비</th><th>증감률</th><th>평균단가</th></tr></thead><tbody></tbody></table></div></div>
 <div class="panel"><h2>24시간 평균 사용패턴</h2><div class="chartbox"><canvas id="hourlyChart"></canvas></div><div class="note" id="hourlyNote">부하이전 없음: 실제 사용패턴만 표시함.</div><div class="legendline" id="hourlyLegend"><span style="color:#2563eb">— 실제 사용</span><span id="shiftedLegend" style="color:#0f766e;display:none">— 이전 후 사용</span></div></div>
-</div><div class="panel"><h2>월별 기준안·시나리오 비교</h2><div class="chartbox"><canvas id="monthlyChart"></canvas></div><div class="legend"><span id="legendBase" style="color:#475569">기준안</span><span id="legendScenario" style="color:#0f766e">시나리오</span></div></div><div class="grid two">
+</div>
+<div class="panel"><h2>시간대별 전력사용량 및 변화 요약</h2>
+<div class="note" style="margin-bottom:8px">주택용 TOU 시간대 기준으로 경부하(22~08시)·중간부하(08~16시)·최대부하(16~22시)를 구분하고, 분석대상의 관측시간당 평균 사용량을 기준안과 시나리오로 비교함.</div>
+<div class="tablewrap"><table id="loadBandTable"><thead><tr><th>부하시간대</th><th>적용시간</th><th>기준안 평균</th><th>시나리오 평균</th><th>변화량</th><th>변화율</th></tr></thead><tbody></tbody></table></div>
+</div>
+<div class="panel"><h2>요금 변화 효과 분해</h2>
+<div class="chartbox" style="height:300px"><canvas id="effectChart"></canvas></div>
+<div class="effect-summary">
+<div class="effect-stat"><div class="el">단가효과</div><div class="ev" id="priceEffectValue">-</div><div class="es">사용패턴 고정 · 단가만 변경</div></div>
+<div class="effect-stat"><div class="el">수요이전 효과</div><div class="ev" id="shiftEffectValue">-</div><div class="es">시나리오 단가 고정 · 부하만 이동</div></div>
+<div class="effect-stat"><div class="el">총 요금변화</div><div class="ev" id="totalEffectValue">-</div><div class="es">단가효과 + 수요이전 효과</div></div>
+<div class="effect-stat"><div class="el">총 변동률</div><div class="ev" id="totalEffectPct">-</div><div class="es">기준요금 대비</div></div>
+</div>
+<div class="note effect-note" id="effectNote">단가효과와 수요이전 효과를 합산하면 총 요금변화와 일치함.</div>
+</div>
+<div class="panel"><h2>월별 기준안·시나리오 비교</h2><div class="chartbox"><canvas id="monthlyChart"></canvas></div><div class="legend"><span id="legendBase" style="color:#475569">기준안</span><span id="legendScenario" style="color:#0f766e">시나리오</span></div></div><div class="grid two">
 <div class="panel"><h2>주택용 TOU · 계절/요일별 분석</h2><div class="note" style="margin-bottom:8px">제주 주택용 TOU의 시간대 구분은 요일에 따라 달라지지 않음. 아래 표는 동일 요금체계를 실제 사용량 기준으로 계절·요일별 분해한 결과임.</div><div class="tablewrap" style="max-height:420px"><table id="touBreakTable"><thead><tr><th>계절</th><th>요일</th><th>사용량</th><th>TOU 요금</th><th>평균단가</th></tr></thead><tbody></tbody></table></div></div>
 <div class="panel"><h2>고객별 기준안·시나리오 비교</h2><div class="actions" style="margin-bottom:9px"><button id="exportCsv">분석결과 CSV 내보내기</button></div><div class="tablewrap" style="max-height:420px"><table id="customerTable"><thead><tr><th>고객ID</th><th>사용량</th><th>기준요금</th><th>시나리오요금</th><th>증감액</th><th>증감률</th></tr></thead><tbody></tbody></table></div></div>
 </div><div class="panel"><h2>분석 기준 및 해석</h2>
-<div class="note">① 히트펌프 별도계량 사용량만 사용하며 기본요금·기후환경요금·연료비조정요금·부가가치세·전력산업기반기금은 제외함. ② 기준요금제는 주택용 누진제·주택용 TOU·일반용(저압) 중 선택하며, 시나리오 요금제는 세 현행 요금제와 히트펌프 전용요금 중 선택함. ③ 주택용 누진제는 히트펌프 사용량을 별도 주택용 계량으로 가정한 환산 전력량요금이며 실제 가구 전체 전기요금과는 다름. ④ 요일 필터 적용 시 주택용 누진요금은 고객·월별 전체 히트펌프 사용량으로 산정한 실효 전력량단가를 선택 요일 사용량에 귀속함. 주택용 TOU의 월 1,000kWh 초과분도 월 사용량 비중에 따라 시간대별로 귀속함. ⑤ 결측 시간값은 사용량 및 요금 산정에서 제외함. ⑥ 히트펌프 전용요금은 비율 조정 또는 직접 단가 입력 방식 중 하나를 선택할 수 있음. ⑦ 부하이전 적용 시 선택한 원천 시간대 사용량의 설정 비율을 같은 고객·같은 날짜의 할인시간대로 이동하며, 균등배분 또는 기존 할인시간 사용패턴 비례배분을 선택할 수 있음. 일 사용량 총계는 보존하며 날짜 간 이동은 허용하지 않음. 총 이전량은 원천시간 사용량×이전율로 먼저 확정되므로 배분방식 변경만으로는 변하지 않음. ⑧ 부하이전은 히트펌프 전용요금의 시나리오 사용패턴과 요금에 반영되며 다른 현행 요금제 계산은 원래 사용패턴을 유지함.</div>
+<div class="note">① 히트펌프 별도계량 사용량만 사용하며 기본요금·기후환경요금·연료비조정요금·부가가치세·전력산업기반기금은 제외함. ② 기준요금제는 주택용 누진제·주택용 TOU·일반용(저압) 중 선택하며, 시나리오 요금제는 세 현행 요금제와 히트펌프 전용요금 중 선택함. ③ 주택용 누진제는 히트펌프 사용량을 별도 주택용 계량으로 가정한 환산 전력량요금이며 실제 가구 전체 전기요금과는 다름. ④ 요일 필터 적용 시 주택용 누진요금은 고객·월별 전체 히트펌프 사용량으로 산정한 실효 전력량단가를 선택 요일 사용량에 귀속함. 주택용 TOU의 월 1,000kWh 초과분도 월 사용량 비중에 따라 시간대별로 귀속함. ⑤ 결측 시간값은 사용량 및 요금 산정에서 제외함. ⑥ 히트펌프 전용요금은 비율 조정 또는 직접 단가 입력 방식 중 하나를 선택할 수 있음. ⑦ 부하이전 적용 시 선택한 원천 시간대 사용량의 설정 비율을 같은 고객·같은 날짜의 할인시간대로 이동하며, 균등배분 또는 기존 할인시간 사용패턴 비례배분을 선택할 수 있음. 일 사용량 총계는 보존하며 날짜 간 이동은 허용하지 않음. 총 이전량은 원천시간 사용량×이전율로 먼저 확정되므로 배분방식 변경만으로는 변하지 않음. ⑧ 부하이전은 히트펌프 전용요금의 시나리오 사용패턴과 요금에 반영되며 다른 현행 요금제 계산은 원래 사용패턴을 유지함. ⑨ 시간대별 사용량 변화는 주택용 TOU 시간대 기준(경부하 22~08시, 중간부하 08~16시, 최대부하 16~22시)의 관측시간당 평균 kWh로 산정함. ⑩ 요금효과 분해는 단가효과(기존 사용패턴에 시나리오 단가만 적용한 요금−기준요금)와 수요이전 효과(부하이전 후 시나리오요금−기존 사용패턴 기준 시나리오요금)로 구분하며 두 효과의 합은 총 요금변화와 일치함.</div>
 </div></main></div>
 
 
@@ -360,16 +393,18 @@ function renderSourceHourStrip(){if(!$('sourceHourStrip'))return;let strip='';fo
 function updateShiftUI(){const on=shiftEnabled();$('shiftPct').disabled=!on;$('shiftPctSlider').disabled=!on;$('shiftDistribution').disabled=!on;$('shiftPanelBadge').textContent=on?'부하이전 적용':'부하이전 없음';$('shiftPanelBadge').className='badge '+(on?'scenario':'off');$('loadShiftBadge').textContent=on?'부하이전 적용':'부하이전 미적용';$('loadShiftBadge').className='badge '+(on?'scenario':'off');renderSourceHourStrip()}
 function summarizeHours(state){const ranges=[];let start=null;for(let h=0;h<=24;h++){const active=h<24&&cosyHours[h]===state;if(active&&start===null)start=h;if(!active&&start!==null){ranges.push([start,h]);start=null}}if(!ranges.length)return'없음';return ranges.map(([a,b])=>String(a).padStart(2,'0')+'~'+String(b).padStart(2,'0')).join(' / ')}
 function hourStateLabel(st){return st==='disc'?'할인':st==='peak'?'인상':'일반'}
+function touBandKey(h){return (h>=22||h<8)?'off':h<16?'mid':'peak'}
+function touBandShort(h){return touBandKey(h)==='off'?'경':touBandKey(h)==='mid'?'중':'최'}
 function baselineHourState(h){const base=$('baseTariff').value;if(base==='t'){if(h>=22||h<8)return'disc';if(h<16)return'normal';return'peak'}return'normal'}
 function nextHourState(st){return st==='disc'?'normal':st==='normal'?'peak':'disc'}
-function renderBaselineTariffStrip(){const base=$('baseTariff').value;let strip='';for(let h=0;h<24;h++){const st=baselineHourState(h);strip+=`<div class="hour fixed ${st}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · 기준 시간대(편집 불가)"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span></div>`}$('baselineTariffStrip').innerHTML=strip;$('baselineTimeLabel').textContent='현행 기준 · '+TARIFF_NAMES[base]}
-function renderTariffStrip(){renderBaselineTariffStrip();let strip='';for(let h=0;h<24;h++){const st=cosyHours[h];strip+=`<div class="hour ${st}" data-hour="${h}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · 클릭: 할인→일반→인상 순환"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span></div>`}$('tariffStrip').innerHTML=strip;$('discountHours').value=summarizeHours('disc');$('peakHours').value=summarizeHours('peak');renderSourceHourStrip();document.querySelectorAll('#tariffStrip .hour').forEach(el=>el.addEventListener('click',()=>{const h=+el.dataset.hour;cosyHours[h]=nextHourState(cosyHours[h]);renderTariffStrip();calculate()}))}
+function renderBaselineTariffStrip(){const base=$('baseTariff').value;let strip='';for(let h=0;h<24;h++){const st=baselineHourState(h),band=touBandShort(h);strip+=`<div class="hour fixed ${st}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · TOU ${band} · 기준 시간대(편집 불가)"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span><span class="tb">${band}</span></div>`}$('baselineTariffStrip').innerHTML=strip;$('baselineTimeLabel').textContent='현행 기준 · '+TARIFF_NAMES[base]}
+function renderTariffStrip(){renderBaselineTariffStrip();let strip='';for(let h=0;h<24;h++){const st=cosyHours[h],band=touBandShort(h);strip+=`<div class="hour ${st}" data-hour="${h}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · TOU ${band} · 클릭: 할인→일반→인상 순환"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span><span class="tb">${band}</span></div>`}$('tariffStrip').innerHTML=strip;$('discountHours').value=summarizeHours('disc');$('peakHours').value=summarizeHours('peak');renderSourceHourStrip();document.querySelectorAll('#tariffStrip .hour').forEach(el=>el.addEventListener('click',()=>{const h=+el.dataset.hour;cosyHours[h]=nextHourState(cosyHours[h]);renderTariffStrip();calculate()}))}
 function calculate(){
  const {progEff,touSuperFrac}=buildMonthParams();
- let total={u:0,g:0,p:0,t:0,o:0,n:0,missing:0,shiftMoved:0,shiftSource:0,shiftSourceDecrease:0,shiftDestIncrease:0};const byMonth={};const byCust=new Map();const byHour=Array.from({length:24},()=>({u:0,su:0,n:0}));const bySW=new Map();
+ let total={u:0,g:0,p:0,t:0,o:0,oOriginal:0,n:0,missing:0,shiftMoved:0,shiftSource:0,shiftSourceDecrease:0,shiftDestIncrease:0};const byMonth={};const byCust=new Map();const byHour=Array.from({length:24},()=>({u:0,su:0,n:0}));const bySW=new Map();
  for(const r of RAW){if(!matchFilters(r))continue;const [c,y,m,d,w]=r;const keyCM=c+'|'+y+'|'+m,pe=progEff.get(keyCM)||0,tf=touSuperFrac.get(keyCM)||0,gr=generalRate(m);if(!byMonth[m])byMonth[m]={g:0,p:0,t:0,o:0,u:0,shiftMoved:0};if(!byCust.has(c))byCust.set(c,{u:0,g:0,p:0,t:0,o:0,shiftMoved:0});const cr=byCust.get(c);const sk=seasonOf(m)+'|'+w;if(!bySW.has(sk))bySW.set(sk,{u:0,t:0});const sw=bySW.get(sk);
    const vals=Array.from({length:24},(_,h)=>r[5+h]);const shifted=shiftDailyValues(vals);total.shiftMoved+=shifted.moved;total.shiftSource+=shifted.source;total.shiftSourceDecrease+=shifted.sourceDecrease;total.shiftDestIncrease+=shifted.destIncrease;byMonth[m].shiftMoved+=shifted.moved;cr.shiftMoved+=shifted.moved;
-   for(let h=0;h<24;h++){const v=vals[h];if(v==null){total.missing++;continue}const sv=shifted.values[h]==null?v:shifted.values[h];const g=v*gr,p=v*pe,t=v*((1-tf)*touRate(m,h)+tf*736.2),o=sv*cosyRate(m,h);total.u+=v;total.g+=g;total.p+=p;total.t+=t;total.o+=o;total.n++;byMonth[m].u+=v;byMonth[m].g+=g;byMonth[m].p+=p;byMonth[m].t+=t;byMonth[m].o+=o;cr.u+=v;cr.g+=g;cr.p+=p;cr.t+=t;cr.o+=o;byHour[h].u+=v;byHour[h].su+=sv;byHour[h].n++;sw.u+=v;sw.t+=t}
+   for(let h=0;h<24;h++){const v=vals[h];if(v==null){total.missing++;continue}const sv=shifted.values[h]==null?v:shifted.values[h];const g=v*gr,p=v*pe,t=v*((1-tf)*touRate(m,h)+tf*736.2),rateO=cosyRate(m,h),o=sv*rateO,oOriginal=v*rateO;total.u+=v;total.g+=g;total.p+=p;total.t+=t;total.o+=o;total.oOriginal+=oOriginal;total.n++;byMonth[m].u+=v;byMonth[m].g+=g;byMonth[m].p+=p;byMonth[m].t+=t;byMonth[m].o+=o;cr.u+=v;cr.g+=g;cr.p+=p;cr.t+=t;cr.o+=o;byHour[h].u+=v;byHour[h].su+=sv;byHour[h].n++;sw.u+=v;sw.t+=t}
  }
  render(total,byMonth,byCust,byHour,bySW);
 }
@@ -382,12 +417,50 @@ function render(total,byMonth,byCust,byHour,bySW){
  const diff=scenario-base,pct=base?diff/base*100:NaN;$('kDiff').textContent=fmtWon(diff);$('kDiff').className='val '+(diff<0?'good':diff>0?'bad':'');$('kDiffPct').textContent=fmtPct(pct);$('kDiffPct').className='val '+(pct<0?'good':pct>0?'bad':'');
  const tariffs=[['g',total.g],['p',total.p],['t',total.t],['o',total.o]].filter(x=>Number.isFinite(x[1])&&total.u>0);tariffs.sort((a,b)=>a[1]-b[1]);$('kBest').textContent=tariffs.length?TARIFF_NAMES[tariffs[0][0]]:'-';$('kBestSub').textContent=tariffs.length&&base?('기준 대비 '+fmtPct((tariffs[0][1]/base-1)*100)):'-';
  const tb=$('summaryTable').querySelector('tbody');tb.innerHTML='';const order=[['g',total.g],['p',total.p],['t',total.t],['o',total.o]],min=Math.min(...order.map(x=>x[1]));for(const [key,val] of order){const tr=document.createElement('tr'),dlt=val-base,pp=base?dlt/base*100:NaN;const tags=(key===baseKey?' <span class="badge off">기준</span>':'')+(key===scenarioKey?' <span class="badge scenario">시나리오</span>':'');if(key===scenarioKey)tr.className='selected-row';tr.innerHTML=`<td class="${val===min?'best':''}">${TARIFF_NAMES[key]}${tags}</td><td>${fmtWon(val)}</td><td class="${dlt<0?'good':dlt>0?'bad':''}">${key===baseKey?'기준':fmtWon(dlt)}</td><td class="${pp<0?'good':pp>0?'bad':''}">${key===baseKey?'-':fmtPct(pp)}</td><td>${fmtRate(total.u?val/total.u:NaN)}</td>`;tb.appendChild(tr)}
- renderCustomer(byCust,baseKey,scenarioKey);renderTouBreak(bySW);drawHourly(byHour,scenarioKey);drawMonthly(byMonth,baseKey,scenarioKey);
+ renderCustomer(byCust,baseKey,scenarioKey);renderTouBreak(bySW);drawHourly(byHour,scenarioKey);renderLoadBandSummary(byHour,scenarioKey);drawBillEffects(total,baseKey,scenarioKey);drawMonthly(byMonth,baseKey,scenarioKey);
 }
+
+function renderLoadBandSummary(byHour,scenarioKey){
+ const defs=[
+  {label:'경부하',hours:'22~08시',idx:[22,23,0,1,2,3,4,5,6,7]},
+  {label:'중간부하',hours:'08~16시',idx:[8,9,10,11,12,13,14,15]},
+  {label:'최대부하',hours:'16~22시',idx:[16,17,18,19,20,21]}
+ ];
+ const tb=$('loadBandTable').querySelector('tbody');tb.innerHTML='';
+ for(const d of defs){
+  let bu=0,su=0,n=0;
+  for(const h of d.idx){bu+=byHour[h].u;su+=byHour[h].su;n+=byHour[h].n}
+  const b=n?bu/n:0,s=(scenarioKey==='o'&&shiftEnabled())?(n?su/n:0):b,delta=s-b,pct=b?delta/b*100:(delta?NaN:0);
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><b>${d.label}</b></td><td>${d.hours}</td><td>${b.toFixed(3)} kWh/h</td><td>${s.toFixed(3)} kWh/h</td><td class="${delta<0?'good':delta>0?'bad':''}">${delta>=0?'+':''}${delta.toFixed(3)} kWh/h</td><td class="${pct<0?'good':pct>0?'bad':''}">${Number.isFinite(pct)?(pct>=0?'+':'')+pct.toFixed(1)+'%':'-'}</td>`;
+  tb.appendChild(tr);
+ }
+}
+function scenarioOriginalCost(total,scenarioKey){if(scenarioKey==='o')return total.oOriginal;return tariffValue(total,scenarioKey)}
+function drawBillEffects(total,baseKey,scenarioKey){
+ const base=tariffValue(total,baseKey),scenarioFinal=tariffValue(total,scenarioKey),scenarioOriginal=scenarioOriginalCost(total,scenarioKey);
+ const priceEffect=scenarioOriginal-base,demandEffect=scenarioFinal-scenarioOriginal,totalEffect=scenarioFinal-base,totalPct=base?totalEffect/base*100:NaN;
+ $('priceEffectValue').textContent=fmtWon(priceEffect);$('priceEffectValue').className='ev '+(priceEffect<0?'good':priceEffect>0?'bad':'');
+ $('shiftEffectValue').textContent=fmtWon(demandEffect);$('shiftEffectValue').className='ev '+(demandEffect<0?'good':demandEffect>0?'bad':'');
+ $('totalEffectValue').textContent=fmtWon(totalEffect);$('totalEffectValue').className='ev '+(totalEffect<0?'good':totalEffect>0?'bad':'');
+ $('totalEffectPct').textContent=fmtPct(totalPct);$('totalEffectPct').className='ev '+(totalPct<0?'good':totalPct>0?'bad':'');
+ const gap=Math.abs((priceEffect+demandEffect)-totalEffect);
+ $('effectNote').innerHTML=`단가효과 = <b>기존 사용패턴에 시나리오 단가만 적용한 요금 − 기준요금</b>, 수요이전 효과 = <b>부하이전 후 시나리오요금 − 기존 사용패턴 기준 시나리오요금</b>. 합계 검증: ${gap<0.01?'<span class="good">일치 ✓</span>':'<span class="bad">차이 '+fmtWon(gap)+'</span>'}`;
+ const {ctx,w,h}=prepCanvas('effectChart'),pad={l:72,r:22,t:24,b:52},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+ ctx.clearRect(0,0,w,h);
+ const vals=[priceEffect,demandEffect,totalEffect],labels=['단가효과','수요이전 효과','총 요금변화'];
+ const maxAbs=Math.max(1,...vals.map(v=>Math.abs(v)))*1.2,y0=pad.t+ch/2;
+ ctx.strokeStyle='#cbd5e1';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y0);ctx.lineTo(pad.l+cw,y0);ctx.stroke();
+ ctx.font='11px Arial';ctx.fillStyle='#64748b';
+ for(let i=-2;i<=2;i++){const val=maxAbs*i/2,y=y0-(val/maxAbs)*(ch/2);if(i!==0){ctx.strokeStyle='#eef2f7';ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke()}const txt=Math.abs(val)>=10000?(val/10000).toFixed(0)+'만':Math.round(val).toLocaleString();ctx.fillStyle='#64748b';ctx.fillText(txt,6,y+4)}
+ const groupW=cw/3,barW=Math.min(82,groupW*.46);
+ vals.forEach((v,i)=>{const x=pad.l+i*groupW+(groupW-barW)/2,bh=Math.abs(v)/maxAbs*(ch/2),y=v>=0?y0-bh:y0;ctx.fillStyle=v<0?'#0f766e':v>0?'#dc2626':'#94a3b8';ctx.fillRect(x,y,barW,Math.max(1,bh));ctx.fillStyle='#334155';ctx.font='11px Arial';const valTxt=(v>=0?'+':'')+Math.round(v).toLocaleString()+'원';ctx.fillText(valTxt,Math.max(pad.l,x+barW/2-valTxt.length*3.2),v>=0?Math.max(13,y-6):Math.min(h-32,y+bh+15));ctx.fillStyle='#64748b';ctx.fillText(labels[i],x+barW/2-labels[i].length*6,h-18)});
+}
+
 function renderCustomer(map,baseKey,scenarioKey){const tb=$('customerTable').querySelector('tbody');tb.innerHTML='';const rows=[...map.entries()].sort((a,b)=>a[0].localeCompare(b[0]));for(const [c,x] of rows){const b=tariffValue(x,baseKey),s=tariffValue(x,scenarioKey),d=s-b,p=b?d/b*100:NaN;const tr=document.createElement('tr');tr.innerHTML=`<td>${c}</td><td>${fmtKwh(x.u)}</td><td>${fmtWon(b)}</td><td>${fmtWon(s)}</td><td class="${d<0?'good':d>0?'bad':''}">${fmtWon(d)}</td><td class="${p<0?'good':p>0?'bad':''}">${fmtPct(p)}</td>`;tb.appendChild(tr)}if(!rows.length)tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#64748b">선택 조건에 해당하는 데이터가 없습니다.</td></tr>'}
 function renderTouBreak(map){const tb=$('touBreakTable').querySelector('tbody');tb.innerHTML='';const ss=['spring','summer','autumn','winter'];for(const s of ss)for(let w=0;w<7;w++){const x=map.get(s+'|'+w);if(!x||!x.u)continue;const tr=document.createElement('tr');tr.innerHTML=`<td>${SN[s]}</td><td>${WN[w]}</td><td>${fmtKwh(x.u)}</td><td>${fmtWon(x.t)}</td><td>${fmtRate(x.t/x.u)}</td>`;tb.appendChild(tr)}if(!tb.children.length)tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#64748b">선택 조건에 해당하는 데이터가 없습니다.</td></tr>'}
 function prepCanvas(id){const c=$(id),rect=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;c.width=Math.max(600,rect.width*dpr);c.height=Math.max(260,rect.height*dpr);const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);return {ctx,w:rect.width,h:rect.height}}
-function drawHourly(byHour,scenarioKey){const {ctx,w,h}=prepCanvas('hourlyChart'),pad={l:48,r:15,t:15,b:34},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;ctx.clearRect(0,0,w,h);for(let hr=0;hr<24;hr++){ctx.fillStyle=scenarioKey==='o'?(isDiscountHour(hr)?'#eff6ff':isPeakHour(hr)?'#fef2f2':'#fff'):'#fff';ctx.fillRect(pad.l+cw*hr/24,pad.t,cw/24,ch)}const vals=byHour.map(x=>x.n?x.u/x.n:0),shiftVals=byHour.map(x=>x.n?x.su/x.n:0),showShift=shiftEnabled();const mx=Math.max(1,...vals,...(showShift?shiftVals:[]))*1.1;ctx.strokeStyle='#dbe1ea';ctx.lineWidth=1;ctx.font='11px Arial';ctx.fillStyle='#64748b';for(let i=0;i<=4;i++){let y=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.fillText((mx*(1-i/4)).toFixed(2),4,y+4)}function line(series,color,width=2){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();series.forEach((v,i)=>{let x=pad.l+cw*(i+.5)/24,y=pad.t+ch*(1-v/mx);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}line(vals,'#2563eb',2);if(showShift)line(shiftVals,'#0f766e',2);ctx.fillStyle='#64748b';for(let i=0;i<24;i+=2)ctx.fillText(String(i).padStart(2,'0'),pad.l+cw*(i+.5)/24-6,h-12);$('shiftedLegend').style.display=showShift?'inline':'none';$('hourlyNote').textContent=showShift?`실제 사용패턴과 부하이전 후 패턴을 함께 표시함. ${fmtKwh(byHour.reduce((a,x)=>a+Math.max(0,x.u-x.su),0))}가 원천시간에서 감소하며 같은 날짜의 할인시간으로 재배분됨.`:(scenarioKey==='o'?'실제 사용패턴만 표시하며, 현재 설정한 할인·인상시간을 배경으로 구분함. 부하이전 없음.':'실제 사용패턴만 표시함. 부하이전 없음.')}
+function drawHourly(byHour,scenarioKey){const {ctx,w,h}=prepCanvas('hourlyChart'),pad={l:48,r:15,t:15,b:34},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;ctx.clearRect(0,0,w,h);for(let hr=0;hr<24;hr++){ctx.fillStyle=scenarioKey==='o'?(isDiscountHour(hr)?'#eff6ff':isPeakHour(hr)?'#fef2f2':'#fff'):'#fff';ctx.fillRect(pad.l+cw*hr/24,pad.t,cw/24,ch)}const vals=byHour.map(x=>x.n?x.u/x.n:0),shiftVals=byHour.map(x=>x.n?x.su/x.n:0),showShift=shiftEnabled()&&scenarioKey==='o';const mx=Math.max(1,...vals,...(showShift?shiftVals:[]))*1.1;ctx.strokeStyle='#dbe1ea';ctx.lineWidth=1;ctx.font='11px Arial';ctx.fillStyle='#64748b';for(let i=0;i<=4;i++){let y=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.fillText((mx*(1-i/4)).toFixed(2),4,y+4)}function line(series,color,width=2){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();series.forEach((v,i)=>{let x=pad.l+cw*(i+.5)/24,y=pad.t+ch*(1-v/mx);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}line(vals,'#2563eb',2);if(showShift)line(shiftVals,'#0f766e',2);ctx.fillStyle='#64748b';for(let i=0;i<24;i+=2)ctx.fillText(String(i).padStart(2,'0'),pad.l+cw*(i+.5)/24-6,h-12);$('shiftedLegend').style.display=showShift?'inline':'none';$('hourlyNote').textContent=showShift?`실제 사용패턴과 부하이전 후 패턴을 함께 표시함. ${fmtKwh(byHour.reduce((a,x)=>a+Math.max(0,x.u-x.su),0))}가 원천시간에서 감소하며 같은 날짜의 할인시간으로 재배분됨.`:(scenarioKey==='o'?'실제 사용패턴만 표시하며, 현재 설정한 할인·인상시간을 배경으로 구분함. 부하이전 없음.':'실제 사용패턴만 표시함. 부하이전 없음.')}
 function drawMonthly(byMonth,baseKey,scenarioKey){const {ctx,w,h}=prepCanvas('monthlyChart'),pad={l:58,r:15,t:18,b:36},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;ctx.clearRect(0,0,w,h);const months=Array.from({length:12},(_,i)=>i+1),series=[[baseKey,COLORS[baseKey]],[scenarioKey,COLORS[scenarioKey]]];let mx=1;for(const m of months)for(const [k]of series)mx=Math.max(mx,(byMonth[m]?.[k]||0));mx*=1.1;ctx.strokeStyle='#e1e6ee';ctx.font='11px Arial';ctx.fillStyle='#64748b';for(let i=0;i<=4;i++){let y=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.fillText(Math.round(mx*(1-i/4)/10000)+'만',6,y+4)}const groupW=cw/12,barW=Math.min(18,groupW/3);months.forEach((m,mi)=>{series.forEach(([k,col],si)=>{let v=byMonth[m]?.[k]||0,bh=ch*v/mx,x=pad.l+mi*groupW+(groupW-2*barW)/2+si*barW;ctx.fillStyle=col;ctx.fillRect(x,pad.t+ch-bh,barW-2,bh)});ctx.fillStyle='#64748b';ctx.fillText(m+'월',pad.l+mi*groupW+groupW/2-8,h-12)});$('legendBase').textContent='기준 · '+TARIFF_NAMES[baseKey];$('legendBase').style.color=COLORS[baseKey];$('legendScenario').textContent='시나리오 · '+TARIFF_NAMES[scenarioKey];$('legendScenario').style.color=COLORS[scenarioKey]}
 function setup(){
  const y=$('year');y.innerHTML='<option value="all">전체 (2022~2026)</option>'+Object.keys(META.years).map(v=>`<option value="${v}" ${v==='2025'?'selected':''}>${v}년${v==='2026'?' (8/5까지)':''}</option>`).join('');for(let m=1;m<=12;m++)$('month').insertAdjacentHTML('beforeend',`<option value="${m}">${m}월</option>`);for(const c of META.customers)$('customer').insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`);$('sourceFile').textContent=META.source_file;$('dataStatus').textContent=`${META.records.toLocaleString()}일 · ${META.customers.length}개 고객 · 전체 관측률 ${META.coverage}%`;
