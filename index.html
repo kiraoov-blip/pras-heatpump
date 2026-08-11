@@ -215,9 +215,9 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 .effect-stat .el{font-size:11px;color:#64748b}
 .effect-stat .ev{font-size:16px;font-weight:800;margin-top:3px;white-space:nowrap}
 .effect-stat .es{font-size:10px;color:#94a3b8;margin-top:2px}
-#loadBandTable{min-width:0}
-#loadBandTable th,#loadBandTable td{text-align:right}
-#loadBandTable th:first-child,#loadBandTable td:first-child,#loadBandTable th:nth-child(2),#loadBandTable td:nth-child(2){text-align:left}
+#hourlyChangeTable,#hourlyDeploymentTable{min-width:0}
+#hourlyChangeTable th,#hourlyChangeTable td,#hourlyDeploymentTable th,#hourlyDeploymentTable td{text-align:right}
+#hourlyChangeTable th:first-child,#hourlyChangeTable td:first-child,#hourlyChangeTable th:nth-child(2),#hourlyChangeTable td:nth-child(2),#hourlyDeploymentTable th:first-child,#hourlyDeploymentTable td:first-child,#hourlyDeploymentTable th:nth-child(2),#hourlyDeploymentTable td:nth-child(2){text-align:left}
 .effect-note{margin-top:8px}
 @media(max-width:1280px){.results-pane>.cosy-settings .hour{height:44px!important}.results-pane>.cosy-settings .hour .tb{font-size:7px}}
 @media(max-width:760px){.results-pane>.cosy-settings .hour{height:36px!important}.results-pane>.cosy-settings .hour .tb{font-size:6px}.effect-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -348,10 +348,6 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <div class="panel"><h2>요금제별 비교</h2><div class="tablewrap"><table id="summaryTable"><thead><tr><th>요금제</th><th>전력량요금</th><th>기준 대비</th><th>증감률</th><th>평균단가</th></tr></thead><tbody></tbody></table></div></div>
 <div class="panel"><h2>24시간 평균 사용패턴</h2><div class="chartbox"><canvas id="hourlyChart"></canvas></div><div class="note" id="hourlyNote">부하이전 없음: 실제 사용패턴만 표시함.</div><div class="legendline" id="hourlyLegend"><span style="color:#2563eb">— 실제 사용</span><span id="shiftedLegend" style="color:#0f766e;display:none">— 이전 후 사용</span></div></div>
 </div>
-<div class="panel"><h2>시간대별 전력사용량 및 변화 요약</h2>
-<div class="note" style="margin-bottom:8px">주택용 TOU 시간대 기준으로 경부하(22~08시)·중간부하(08~16시)·최대부하(16~22시)를 구분하고, 분석대상의 관측시간당 평균 사용량을 기준안과 시나리오로 비교함.</div>
-<div class="tablewrap"><table id="loadBandTable"><thead><tr><th>부하시간대</th><th>적용시간</th><th>기준안 평균</th><th>시나리오 평균</th><th>변화량</th><th>변화율</th></tr></thead><tbody></tbody></table></div>
-</div>
 <div class="panel"><h2>요금 변화 효과 분해</h2>
 <div class="chartbox" style="height:300px"><canvas id="effectChart"></canvas></div>
 <div class="effect-summary">
@@ -387,6 +383,16 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 </div>
 <div class="note" id="deploymentNote" style="margin-top:10px">현재 부하이전은 에너지를 절감하지 않고 시간대만 이동하므로 연간 전력절감량과 고정 배출계수 기준 CO₂ 절감량은 0이 원칙임.</div>
 </div>
+<div class="panel" id="hourlyChangePanel"><h2>시간별(24시간) 전력사용량 및 변화 요약</h2>
+<div class="note" style="margin-bottom:10px">00~23시를 개별 시간대로 구분하여 기준안과 시나리오의 사용량 변화를 비교함. <b>상단 표</b>는 현재 선택한 분석조건의 관측시간당 평균 사용량이며, <b>하단 표</b>는 2025년 전체 16개 고객 고정표본의 가구당 연간 시간별 사용량을 현재 보급확대 가정(목표 보급가구수×가입률)에 선형 확대하여 산정함.</div>
+<h3 style="margin:0 0 6px;font-size:14px">분석 표본 · 시간당 평균 사용량</h3>
+<div class="tablewrap"><table id="hourlyChangeTable"><thead><tr><th>시간</th><th>부하</th><th>기준안 평균</th><th>시나리오 평균</th><th>변화량</th><th>변화율</th></tr></thead><tbody></tbody></table></div>
+<div class="sep"></div>
+<h3 style="margin:0 0 6px;font-size:14px">보급확대 반영 · 가입자 전체 연간 시간별 사용량</h3>
+<div class="note" id="hourlyDeploymentBasis" style="margin-bottom:8px">2025년 16가구 고정표본 × 예상 가입가구 기준</div>
+<div class="tablewrap"><table id="hourlyDeploymentTable"><thead><tr><th>시간</th><th>부하</th><th>기준안 전체</th><th>시나리오 전체</th><th>전체 변화량</th><th>변화율</th></tr></thead><tbody></tbody></table></div>
+<div class="note" id="hourlyDeploymentSummary" style="margin-top:8px">시간별 증가·감소량을 합산하면 현재 총사용량 보존 가정에서는 순 연간 사용량 변화가 0에 수렴함.</div>
+</div>
 <div class="panel"><h2>월별 기준안·시나리오 비교</h2><div class="chartbox"><canvas id="monthlyChart"></canvas></div><div class="legend"><span id="legendBase" style="color:#475569">기준안</span><span id="legendScenario" style="color:#0f766e">시나리오</span></div></div><div class="grid two">
 <div class="panel"><h2>주택용 TOU · 계절/요일별 분석</h2><div class="note" style="margin-bottom:8px">제주 주택용 TOU의 시간대 구분은 요일에 따라 달라지지 않음. 아래 표는 동일 요금체계를 실제 사용량 기준으로 계절·요일별 분해한 결과임.</div><div class="tablewrap" style="max-height:420px"><table id="touBreakTable"><thead><tr><th>계절</th><th>요일</th><th>사용량</th><th>TOU 요금</th><th>평균단가</th></tr></thead><tbody></tbody></table></div></div>
 <div class="panel"><h2>고객별 기준안·시나리오 비교</h2><div class="actions" style="margin-bottom:9px"><button id="exportCsv">분석결과 CSV 내보내기</button></div><div class="tablewrap" style="max-height:420px"><table id="customerTable"><thead><tr><th>고객ID</th><th>사용량</th><th>기준요금</th><th>시나리오요금</th><th>증감액</th><th>증감률</th></tr></thead><tbody></tbody></table></div></div>
@@ -400,10 +406,10 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <div class="interpret-item"><b>⑥ 히트펌프 전용요금</b> 비율 조정 또는 직접 단가 입력 방식 중 하나를 선택할 수 있음.</div>
 <div class="interpret-item"><b>⑦ 부하이전</b> 선택한 원천 시간대 사용량의 설정 비율을 같은 고객·같은 날짜의 할인시간대로 이동함. 균등배분 또는 기존 할인시간 사용패턴 비례배분을 선택할 수 있으며, 일 사용량 총계는 보존하고 날짜 간 이동은 허용하지 않음. 총 이전량은 원천시간 사용량×이전율로 먼저 확정되므로 배분방식 변경만으로는 변하지 않음.</div>
 <div class="interpret-item"><b>⑧ 부하이전 적용범위</b> 부하이전은 히트펌프 전용요금의 시나리오 사용패턴과 요금에 반영되며 다른 현행 요금제 계산은 원래 사용패턴을 유지함.</div>
-<div class="interpret-item"><b>⑨ 시간대별 사용량 변화</b> 주택용 TOU 시간대 기준인 경부하 22~08시, 중간부하 08~16시, 최대부하 16~22시의 관측시간당 평균 kWh로 산정함.</div>
+<div class="interpret-item"><b>⑨ 시간대별 사용량 변화</b> 00~23시를 개별 시간대로 구분하여 현재 분석대상의 관측시간당 평균 kWh를 기준안·시나리오로 비교하며, 각 시간에 주택용 TOU 부하구분(경/중/최)을 함께 표시함.</div>
 <div class="interpret-item"><b>⑩ 요금효과 분해</b> 단가효과는 기존 사용패턴에 시나리오 단가만 적용한 요금−기준요금, 수요이전 효과는 부하이전 후 시나리오요금−기존 사용패턴 기준 시나리오요금으로 산정하며 두 효과의 합은 총 요금변화와 일치함.</div>
 <div class="interpret-item"><b>⑪ 가구당 연간 효과</b> 2025년 전체 16개 고객을 고정 표본으로 사용하며, 가구당 피크는 동일 시각의 표본 평균부하 중 연중 최대값인 동시피크로 산정함.</div>
-<div class="interpret-item"><b>⑫ 보급 확대 효과</b> 목표 보급가구수×가입률을 예상 가입가구로 하여 가구당 효과를 선형 확대함.</div>
+<div class="interpret-item"><b>⑫ 보급 확대 효과</b> 목표 보급가구수×가입률을 예상 가입가구로 하여 2025년 전체 16개 고객 고정표본의 가구당 효과를 선형 확대함. 시간별 확대효과도 2025년 가구당 연간 00~23시 사용량을 예상 가입가구에 곱해 산정함.</div>
 <div class="interpret-item"><b>⑬ 전력절감량·CO₂ 해석</b> 현재 부하이전은 총 kWh를 보존하는 시간대 이동 모델이므로 전력절감량은 원칙적으로 0임. 따라서 고정 연평균 배출계수를 사용하는 현재 방식에서는 CO₂ 절감량도 0이 됨. 이는 절감효과가 없다는 뜻이 아니라 요금·피크 효과는 발생하되 총 에너지사용량 자체는 줄지 않았다는 의미임. 시간대별 한계배출계수에 따른 배출저감 효과는 현재 포함하지 않음.</div>
 <div class="interpret-item"><b>⑭ SMP 기반 구입비 영향</b> 2022~2025년 제주 SMP의 1h~24h를 각 연도 히트펌프 H01~H24와 날짜·시간별로 매칭하고, 각 시간의 사용량 변동분(시나리오−기준)에 해당 시각의 원래 SMP를 곱해 합산함. 사용량이 감소한 시간은 구입비 감소효과(음수), 증가한 시간은 구입비 증가효과(양수)로 반영하며 두 효과의 합이 순 SMP 기반 구입비 영향임. 수요이전으로 SMP 자체가 변하지 않는다고 가정함. 가중평균 SMP 변화는 결과 해석을 위한 참고지표이며 핵심 산식에는 별도 가중평균값을 사용하지 않음. 상단 값은 현재 선택한 연도·고객 표본의 영향이며, 하단 보급확대 값은 2025년 16가구 고정 표본의 가구당 순 영향을 가입가구수에 선형 확대함.</div>
 </div>
@@ -473,6 +479,8 @@ function baselineHourState(h){const base=$('baseTariff').value;if(base==='t'){if
 function nextHourState(st){return st==='disc'?'normal':st==='normal'?'peak':'disc'}
 function renderBaselineTariffStrip(){const base=$('baseTariff').value;let strip='';for(let h=0;h<24;h++){const st=baselineHourState(h),band=touBandShort(h);strip+=`<div class="hour fixed ${st}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · TOU ${band} · 기준 시간대(편집 불가)"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span><span class="tb">${band}</span></div>`}$('baselineTariffStrip').innerHTML=strip;$('baselineTimeLabel').textContent='현행 기준 · '+TARIFF_NAMES[base]}
 function renderTariffStrip(){renderBaselineTariffStrip();let strip='';for(let h=0;h<24;h++){const st=cosyHours[h],band=touBandShort(h);strip+=`<div class="hour ${st}" data-hour="${h}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · TOU ${band} · 클릭: 할인→일반→인상 순환"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span><span class="tb">${band}</span></div>`}$('tariffStrip').innerHTML=strip;$('discountHours').value=summarizeHours('disc');$('peakHours').value=summarizeHours('peak');renderSourceHourStrip();document.querySelectorAll('#tariffStrip .hour').forEach(el=>el.addEventListener('click',()=>{const h=+el.dataset.hour;cosyHours[h]=nextHourState(cosyHours[h]);renderTariffStrip();calculate()}))}
+let LAST_BY_HOUR=null;
+let LAST_SCENARIO_KEY='o';
 function calculate(){
  const {progEff,touSuperFrac}=buildMonthParams();
  const scenarioKeyForSmp=$('scenarioTariff').value,useShiftForSmp=scenarioKeyForSmp==='o'&&shiftEnabled();
@@ -495,7 +503,7 @@ function render(total,byMonth,byCust,byHour,bySW){
  const tariffs=[['g',total.g],['p',total.p],['t',total.t],['o',total.o]].filter(x=>Number.isFinite(x[1])&&total.u>0);tariffs.sort((a,b)=>a[1]-b[1]);$('kBest').textContent=tariffs.length?TARIFF_NAMES[tariffs[0][0]]:'-';$('kBestSub').textContent=tariffs.length&&base?('기준 대비 '+fmtPct((tariffs[0][1]/base-1)*100)):'-';
  renderSmpImpact(total,custCount);
  const tb=$('summaryTable').querySelector('tbody');tb.innerHTML='';const order=[['g',total.g],['p',total.p],['t',total.t],['o',total.o]],min=Math.min(...order.map(x=>x[1]));for(const [key,val] of order){const tr=document.createElement('tr'),dlt=val-base,pp=base?dlt/base*100:NaN;const tags=(key===baseKey?' <span class="badge off">기준</span>':'')+(key===scenarioKey?' <span class="badge scenario">시나리오</span>':'');if(key===scenarioKey)tr.className='selected-row';tr.innerHTML=`<td class="${val===min?'best':''}">${TARIFF_NAMES[key]}${tags}</td><td>${fmtWon(val)}</td><td class="${dlt<0?'good':dlt>0?'bad':''}">${key===baseKey?'기준':fmtWon(dlt)}</td><td class="${pp<0?'good':pp>0?'bad':''}">${key===baseKey?'-':fmtPct(pp)}</td><td>${fmtRate(total.u?val/total.u:NaN)}</td>`;tb.appendChild(tr)}
- renderCustomer(byCust,baseKey,scenarioKey);renderTouBreak(bySW);drawHourly(byHour,scenarioKey);renderLoadBandSummary(byHour,scenarioKey);drawBillEffects(total,baseKey,scenarioKey);drawMonthly(byMonth,baseKey,scenarioKey);renderDeploymentEffects();
+ LAST_BY_HOUR=byHour;LAST_SCENARIO_KEY=scenarioKey;renderCustomer(byCust,baseKey,scenarioKey);renderTouBreak(bySW);drawHourly(byHour,scenarioKey);drawBillEffects(total,baseKey,scenarioKey);drawMonthly(byMonth,baseKey,scenarioKey);renderDeploymentEffects();
 }
 
 function renderSmpImpact(total,custCount){
@@ -523,21 +531,32 @@ function renderSmpImpact(total,custCount){
  for(const r of rows){const costNum=r[0]==='사용량 감소시간'?total.smpDecreaseEffect:r[0]==='사용량 증가시간'?total.smpIncreaseEffect:delta;const tr=document.createElement('tr');tr.innerHTML=`<td><b>${r[0]}</b></td><td>${r[1]}</td><td class="${costNum<0?'good':costNum>0?'bad':''}">${r[2]}</td><td>${r[3]}</td>`;tbody.appendChild(tr)}
 }
 
-function renderLoadBandSummary(byHour,scenarioKey){
- const defs=[
-  {label:'경부하',hours:'22~08시',idx:[22,23,0,1,2,3,4,5,6,7]},
-  {label:'중간부하',hours:'08~16시',idx:[8,9,10,11,12,13,14,15]},
-  {label:'최대부하',hours:'16~22시',idx:[16,17,18,19,20,21]}
- ];
- const tb=$('loadBandTable').querySelector('tbody');tb.innerHTML='';
- for(const d of defs){
-  let bu=0,su=0,n=0;
-  for(const h of d.idx){bu+=byHour[h].u;su+=byHour[h].su;n+=byHour[h].n}
-  const b=n?bu/n:0,s=(scenarioKey==='o'&&shiftEnabled())?(n?su/n:0):b,delta=s-b,pct=b?delta/b*100:(delta?NaN:0);
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td><b>${d.label}</b></td><td>${d.hours}</td><td>${b.toFixed(3)} kWh/h</td><td>${s.toFixed(3)} kWh/h</td><td class="${delta<0?'good':delta>0?'bad':''}">${delta>=0?'+':''}${delta.toFixed(3)} kWh/h</td><td class="${pct<0?'good':pct>0?'bad':''}">${Number.isFinite(pct)?(pct>=0?'+':'')+pct.toFixed(1)+'%':'-'}</td>`;
-  tb.appendChild(tr);
+function fmtExpandedEnergy(v){
+ if(!Number.isFinite(v))return '-';
+ const sign=v<0?'-':v>0?'+':'';const a=Math.abs(v);
+ if(a>=1000000)return sign+(a/1000000).toLocaleString(undefined,{maximumFractionDigits:2})+' GWh/년';
+ if(a>=1000)return sign+(a/1000).toLocaleString(undefined,{maximumFractionDigits:2})+' MWh/년';
+ return sign+a.toLocaleString(undefined,{maximumFractionDigits:1})+' kWh/년';
+}
+function fmtExpandedEnergyAbs(v){
+ if(!Number.isFinite(v))return '-';const a=Math.abs(v);
+ if(a>=1000000)return (v/1000000).toLocaleString(undefined,{maximumFractionDigits:2})+' GWh/년';
+ if(a>=1000)return (v/1000).toLocaleString(undefined,{maximumFractionDigits:2})+' MWh/년';
+ return v.toLocaleString(undefined,{maximumFractionDigits:1})+' kWh/년';
+}
+function renderHourlyUsageSummary(byHour,scenarioKey,annualHourly,subs){
+ const tb=$('hourlyChangeTable')?.querySelector('tbody');
+ if(tb){tb.innerHTML='';for(let h=0;h<24;h++){
+  const x=byHour?.[h]||{u:0,su:0,n:0},b=x.n?x.u/x.n:0,s=(scenarioKey==='o'&&shiftEnabled())?(x.n?x.su/x.n:0):b,delta=s-b,pct=b?delta/b*100:(delta?NaN:0),tr=document.createElement('tr');
+  tr.innerHTML=`<td><b>${String(h).padStart(2,'0')}:00</b></td><td>${touBandShort(h)}</td><td>${b.toFixed(3)} kWh/h</td><td>${s.toFixed(3)} kWh/h</td><td class="${delta<0?'good':delta>0?'bad':''}">${delta>=0?'+':''}${delta.toFixed(3)} kWh/h</td><td class="${pct<0?'good':pct>0?'bad':''}">${Number.isFinite(pct)?(pct>=0?'+':'')+pct.toFixed(1)+'%':'-'}</td>`;tb.appendChild(tr)
+ }}
+ const dtb=$('hourlyDeploymentTable')?.querySelector('tbody');if(!dtb||!annualHourly)return;dtb.innerHTML='';let dec=0,inc=0,net=0;
+ for(let h=0;h<24;h++){
+  const x=annualHourly[h]||{baseAnnual:0,scenarioAnnual:0,deltaAnnual:0};const b=x.baseAnnual*subs,s=x.scenarioAnnual*subs,d=x.deltaAnnual*subs,pct=b?d/b*100:(d?NaN:0);if(d<0)dec+=d;else if(d>0)inc+=d;net+=d;const tr=document.createElement('tr');
+  tr.innerHTML=`<td><b>${String(h).padStart(2,'0')}:00</b></td><td>${touBandShort(h)}</td><td>${fmtExpandedEnergyAbs(b)}</td><td>${fmtExpandedEnergyAbs(s)}</td><td class="${d<0?'good':d>0?'bad':''}">${fmtExpandedEnergy(d)}</td><td class="${pct<0?'good':pct>0?'bad':''}">${Number.isFinite(pct)?(pct>=0?'+':'')+pct.toFixed(1)+'%':'-'}</td>`;dtb.appendChild(tr)
  }
+ if($('hourlyDeploymentBasis'))$('hourlyDeploymentBasis').innerHTML=`2025년 전체 16개 고객 고정표본의 가구당 연간 시간별 사용량 × 예상 가입가구 <b>${subs.toLocaleString()}가구</b> 기준. 현재 목표 보급가구수·가입률 변경 시 즉시 갱신됨.`;
+ if($('hourlyDeploymentSummary'))$('hourlyDeploymentSummary').innerHTML=`가입자 전체 연간 시간별 변화 합계: 감소 <b class="good">${fmtExpandedEnergy(dec)}</b> · 증가 <b class="bad">${fmtExpandedEnergy(inc)}</b> · 순변화 <b>${fmtExpandedEnergy(net)}</b>. 현재 부하이전은 총 kWh 보존 방식이므로 감소와 증가가 상쇄되어 순변화는 0에 수렴함.`;
 }
 function scenarioOriginalCost(total,scenarioKey){if(scenarioKey==='o')return total.oOriginal;return tariffValue(total,scenarioKey)}
 function drawBillEffects(total,baseKey,scenarioKey){
@@ -587,7 +606,7 @@ function buildAnnual2025MonthParams(){
 }
 function calculateAnnual2025Sample(){
  const baseKey=$('baseTariff').value,scenarioKey=$('scenarioTariff').value,{progEff,touSuperFrac}=buildAnnual2025MonthParams();
- const custSet=new Set(),tot={u:0,su:0,g:0,p:0,t:0,o:0,smpBase:0,smpScenario:0,smpDecreaseEffect:0,smpIncreaseEffect:0},clock=new Map();
+ const custSet=new Set(),tot={u:0,su:0,g:0,p:0,t:0,o:0,smpBase:0,smpScenario:0,smpDecreaseEffect:0,smpIncreaseEffect:0},clock=new Map(),hourly=Array.from({length:24},()=>({b:0,s:0,n:0}));
  for(const r of RAW){
   if(r[1]!==2025)continue;
   const [c,y,m,d,w]=r;custSet.add(c);const keyCM=c+'|'+m,pe=progEff.get(keyCM)||0,tf=touSuperFrac.get(keyCM)||0,gr=generalRate(m);
@@ -595,13 +614,13 @@ function calculateAnnual2025Sample(){
   for(let h=0;h<24;h++){
    const v=vals[h];if(v==null)continue;const sv=useShift?(shifted.values[h]==null?v:shifted.values[h]):v;
    tot.u+=v;tot.su+=sv;tot.g+=v*gr;tot.p+=v*pe;tot.t+=v*((1-tf)*touRate(m,h)+tf*736.2);tot.o+=sv*cosyRate(m,h);const sr=smpRate(2025,m,d,h);if(Number.isFinite(sr)){const dk=sv-v,effect=dk*sr;tot.smpBase+=v*sr;tot.smpScenario+=sv*sr;if(dk<0)tot.smpDecreaseEffect+=effect;else if(dk>0)tot.smpIncreaseEffect+=effect}
-   const tk=`${m}-${d}-${h}`;let z=clock.get(tk);if(!z){z={b:0,s:0,n:0};clock.set(tk,z)}z.b+=v;z.s+=sv;z.n++;
+   const tk=`${m}-${d}-${h}`;let z=clock.get(tk);if(!z){z={b:0,s:0,n:0};clock.set(tk,z)}z.b+=v;z.s+=sv;z.n++;const hz=hourly[h];hz.b+=v;hz.s+=sv;hz.n++;
   }
  }
  const nCust=custSet.size||1,baseBill=tariffValue(tot,baseKey),scenarioBill=tariffValue(tot,scenarioKey);
  let basePeak=0,scenarioPeak=0;
  for(const z of clock.values()){if(!z.n)continue;basePeak=Math.max(basePeak,z.b/z.n);scenarioPeak=Math.max(scenarioPeak,z.s/z.n)}
- return {nCust,baseBill:baseBill/nCust,scenarioBill:scenarioBill/nCust,baseEnergy:tot.u/nCust,scenarioEnergy:tot.su/nCust,basePeak,scenarioPeak,baseSmp:tot.smpBase/nCust,scenarioSmp:tot.smpScenario/nCust,smpDecreaseEffect:tot.smpDecreaseEffect/nCust,smpIncreaseEffect:tot.smpIncreaseEffect/nCust,smpNetEffect:(tot.smpDecreaseEffect+tot.smpIncreaseEffect)/nCust};
+ return {nCust,baseBill:baseBill/nCust,scenarioBill:scenarioBill/nCust,baseEnergy:tot.u/nCust,scenarioEnergy:tot.su/nCust,basePeak,scenarioPeak,baseSmp:tot.smpBase/nCust,scenarioSmp:tot.smpScenario/nCust,smpDecreaseEffect:tot.smpDecreaseEffect/nCust,smpIncreaseEffect:tot.smpIncreaseEffect/nCust,smpNetEffect:(tot.smpDecreaseEffect+tot.smpIncreaseEffect)/nCust,hourly:hourly.map(z=>({baseAnnual:z.b/nCust,scenarioAnnual:z.s/nCust,deltaAnnual:(z.s-z.b)/nCust}))};
 }
 function renderDeploymentEffects(){
  if(!$('householdEffectTable'))return;
@@ -618,6 +637,7 @@ function renderDeploymentEffects(){
  const tb=$('householdEffectTable').querySelector('tbody');tb.innerHTML='';
  for(const r of rows){const tr=document.createElement('tr');tr.innerHTML=`<td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[5]<0?'good':r[5]>0?'bad':''}">${r[3]}</td><td class="${r[5]<0?'good':r[5]>0?'bad':''}">${r[4]}</td>`;tb.appendChild(tr)}
  const target=Math.max(0,Math.min(200000,+$('targetHouseholds').value||0)),part=Math.max(0,Math.min(100,+$('participationRate').value||0)),subs=Math.round(target*part/100),co2=Math.max(0,+$('co2Factor').value||0);
+ renderHourlyUsageSummary(LAST_BY_HOUR,LAST_SCENARIO_KEY,x.hourly,subs);
  $('subscriberHouseholds').textContent=subs.toLocaleString()+'가구';$('subscriberFormula').textContent=`${Math.round(target).toLocaleString()}가구 × ${part.toFixed(1)}%`;
  const totBill=billSaving*subs,smpImpactHH=x.smpNetEffect,totSmpImpact=smpImpactHH*subs,totEnergy=energySaving*subs,totPeak=peakSaving*subs,totCo2=totEnergy*co2;
  $('totalBillSaving').textContent=fmtEokWon(totBill);$('totalBillSaving').className='dv '+(totBill>0?'good':totBill<0?'bad':'');$('totalSmpImpact').textContent=fmtEokWon(totSmpImpact);$('totalSmpImpact').className='dv '+(totSmpImpact<0?'good':totSmpImpact>0?'bad':'');
