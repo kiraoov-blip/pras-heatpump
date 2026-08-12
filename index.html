@@ -403,7 +403,7 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 .smp-tariff-row #smpCostTable th:nth-child(2),.smp-tariff-row #smpCostTable td:nth-child(2){width:17%;white-space:nowrap}
 .smp-tariff-row #smpCostTable th:nth-child(3),.smp-tariff-row #smpCostTable td:nth-child(3){width:20%;white-space:nowrap}
 .smp-tariff-row #smpCostTable th:nth-child(4),.smp-tariff-row #smpCostTable td:nth-child(4){width:39%;white-space:normal;text-align:left;word-break:keep-all;overflow-wrap:anywhere}
-.smp-tariff-row #smpCostNote,.smp-tariff-row #smpCostReference{white-space:normal;overflow-wrap:anywhere;word-break:keep-all;line-height:1.5}
+.smp-tariff-row #smpCostNote{white-space:normal;overflow-wrap:anywhere;word-break:keep-all;line-height:1.5}
 .smp-tariff-row #summaryTable th,.smp-tariff-row #summaryTable td{font-size:11.5px;padding:8px 6px}
 @media(max-width:1120px){
   .settings-pane .analysis-settings .analysis-grid-v24{grid-template-columns:repeat(2,minmax(0,1fr))!important}
@@ -505,9 +505,8 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 </div>
 <div class="grid smp-tariff-row">
 <div class="panel"><h2>SMP 기반 구입비 영향</h2>
-<div class="note" id="smpCostNote" style="margin-bottom:8px">시간별 사용량 변동분(시나리오−기준)에 해당 시각의 원래 제주 SMP를 곱한 값을 모두 합산하여 산정함. 수요이전에 따른 SMP 자체 변화는 없다고 가정함.</div>
 <div class="tablewrap"><table id="smpCostTable"><thead><tr><th>구분</th><th>사용량 변동</th><th>SMP 기반 비용효과</th><th>해석</th></tr></thead><tbody></tbody></table></div>
-<div class="note" id="smpCostReference" style="margin-top:8px">기준·시나리오 총 SMP 기반 구입비와 가중평균 SMP는 참고정보로 표시함.</div>
+<div class="note" id="smpCostNote" style="margin-top:8px">핵심 산식은 <b>Σ[(시나리오 사용량−기준 사용량)×해당 시각 SMP]</b>이며, 수요이전에 따른 SMP 자체 변화는 없다고 가정함.</div>
 </div><div class="panel"><h2>요금제별 비교</h2><div class="tablewrap"><table id="summaryTable"><thead><tr><th>요금제</th><th>전력량요금</th><th>기준 대비</th><th>증감률</th><th>평균단가</th></tr></thead><tbody></tbody></table></div></div>
 </div>
 <div class="panel"><h2>24시간 평균 사용패턴</h2><div class="chartbox"><canvas id="hourlyChart"></canvas></div><div class="note" id="hourlyNote">부하이전 없음: 실제 사용패턴만 표시함.</div><div class="legendline" id="hourlyLegend"><span style="color:#2563eb">— 실제 사용</span><span id="shiftedLegend" style="color:#0f766e;display:none">— 이전 후 사용</span></div></div>
@@ -585,7 +584,7 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <div class="interpret-item"><b>⑪ 가구당 연간 효과</b> 2025년 전체 16개 고객을 고정 표본으로 사용하며, 가구당 피크는 동일 시각의 표본 평균부하 중 연중 최대값인 동시피크로 산정함.</div>
 <div class="interpret-item"><b>⑫ 보급 확대 효과</b> 목표 보급가구수×가입률을 예상 가입가구로 하여 2025년 전체 16개 고객 고정표본의 가구당 효과를 선형 확대함. 시간별 확대효과도 2025년 가구당 연간 00~23시 사용량을 예상 가입가구에 곱해 산정함.</div>
 <div class="interpret-item"><b>⑬ 전력절감량·CO₂ 해석</b> 현재 부하이전은 총 kWh를 보존하는 시간대 이동 모델이므로 전력절감량은 원칙적으로 0임. 따라서 고정 연평균 배출계수를 사용하는 현재 방식에서는 CO₂ 절감량도 0이 됨. 이는 절감효과가 없다는 뜻이 아니라 요금·피크 효과는 발생하되 총 에너지사용량 자체는 줄지 않았다는 의미임. 시간대별 한계배출계수에 따른 배출저감 효과는 현재 포함하지 않음.</div>
-<div class="interpret-item"><b>⑭ SMP 기반 구입비 영향</b> 2022~2025년 제주 SMP의 1h~24h를 각 연도 히트펌프 H01~H24와 날짜·시간별로 매칭하고, 각 시간의 사용량 변동분(시나리오−기준)에 해당 시각의 원래 SMP를 곱해 합산함. 사용량이 감소한 시간은 구입비 감소효과(음수), 증가한 시간은 구입비 증가효과(양수)로 반영하며 두 효과의 합이 순 SMP 기반 구입비 영향임. 수요이전으로 SMP 자체가 변하지 않는다고 가정함. 가중평균 SMP 변화는 결과 해석을 위한 참고지표이며 핵심 산식에는 별도 가중평균값을 사용하지 않음. 상단 값은 현재 선택한 연도·고객 표본의 영향이며, 하단 보급확대 값은 2025년 16가구 고정 표본의 가구당 순 영향을 가입가구수에 선형 확대함.</div>
+<div class="interpret-item"><b>⑭ SMP 기반 구입비 영향</b> 2022~2025년 제주 SMP의 1h~24h를 각 연도 히트펌프 H01~H24와 날짜·시간별로 매칭하고, 각 시간의 사용량 변동분(시나리오−기준)에 해당 시각의 원래 SMP를 곱해 합산함. 사용량이 감소한 시간은 구입비 감소효과(음수), 증가한 시간은 구입비 증가효과(양수)로 반영하며 두 효과의 합이 순 SMP 기반 구입비 영향임. 수요이전으로 SMP 자체가 변하지 않는다고 가정함. 상단 값은 현재 선택한 연도·고객 표본의 영향이며, 하단 보급확대 값은 2025년 16가구 고정 표본의 가구당 순 영향을 가입가구수에 선형 확대함.</div>
 </div>
 </div></main></div>
 
@@ -686,18 +685,15 @@ function renderSmpImpact(total,custCount){
  const y=smpSelectionYear(),available=!!y&&total.smpN>0,tbody=$('smpCostTable').querySelector('tbody');
  if(!available){
   $('kSmpImpact').textContent='-';$('kSmpImpact').className='val';$('kSmpSub').textContent='2022~2025년 선택 시 계산';
-  $('smpCostNote').innerHTML='첨부된 제주 SMP 자료는 <b>2022~2025년 시간별 자료</b>임. 분석연도를 2022~2025년 중 하나로 선택하면 시간별 사용량 변동분에 동일 시각의 제주 SMP를 곱해 SMP 기반 구입비 영향을 계산함.';
-  $('smpCostReference').textContent='기준·시나리오 총 SMP 기반 구입비와 가중평균 SMP는 참고정보로 표시함.';
+  $('smpCostNote').innerHTML='핵심 산식은 <b>Σ[(시나리오 사용량−기준 사용량)×해당 시각 SMP]</b>이며, 수요이전에 따른 SMP 자체 변화는 없다고 가정함.';
   tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:#64748b">2022~2025년 중 하나의 연도를 선택하면 SMP 기반 구입비 영향이 표시됩니다.</td></tr>';
   return;
  }
  const b=total.smpBase,s=total.smpScenario,delta=total.smpDecreaseEffect+total.smpIncreaseEffect,pct=b?delta/b*100:NaN;
- const bAvg=total.smpBaseKwh?b/total.smpBaseKwh:NaN,sAvg=total.smpScenarioKwh?s/total.smpScenarioKwh:NaN;
- const dataHours=SMP_BY_YEAR[y].length,netKwh=total.smpDecreaseKwh+total.smpIncreaseKwh;
+ const netKwh=total.smpDecreaseKwh+total.smpIncreaseKwh;
  $('kSmpImpact').textContent=fmtWon(delta);$('kSmpImpact').className='val '+(delta<0?'good':delta>0?'bad':'');
  $('kSmpSub').textContent=`${y}년 · ${custCount}개 고객 · 감소효과 ${fmtWon(total.smpDecreaseEffect)} + 증가효과 ${fmtWon(total.smpIncreaseEffect)} = ${fmtWon(delta)}`;
- $('smpCostNote').innerHTML=`${y}년 제주 시간별 SMP <b>${dataHours.toLocaleString()}시간</b>을 현재 선택한 <b>${custCount}개 고객</b>의 동일 날짜·동일 시간에 매칭함. 핵심 산식은 <b>Σ[(시나리오 사용량−기준 사용량)×해당 시각 SMP]</b>이며, 수요이전에 따른 SMP 자체 변화는 없다고 가정함. SMP 매칭 관측 ${total.smpN.toLocaleString()}시간.`;
- $('smpCostReference').innerHTML=`참고: 기준 SMP 기반 구입비 <b>${fmtWon(b)}</b> → 시나리오 <b>${fmtWon(s)}</b> (${fmtPct(pct)}). 사용량 가중평균 SMP는 ${fmtRate(bAvg)} → ${fmtRate(sAvg)}이며, 이는 결과 해석용 참고지표임.`;
+ $('smpCostNote').innerHTML='핵심 산식은 <b>Σ[(시나리오 사용량−기준 사용량)×해당 시각 SMP]</b>이며, 수요이전에 따른 SMP 자체 변화는 없다고 가정함.';
  const rows=[
   ['사용량 감소시간',fmtKwh(total.smpDecreaseKwh),fmtWon(total.smpDecreaseEffect),'사용량 감소분 × 해당 시각 SMP → 구입비 감소'],
   ['사용량 증가시간','+'+fmtKwh(total.smpIncreaseKwh),fmtWon(total.smpIncreaseEffect),'사용량 증가분 × 해당 시각 SMP → 구입비 증가'],
