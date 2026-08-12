@@ -414,6 +414,30 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
   .settings-pane .analysis-settings .analysis-grid-v24{grid-template-columns:1fr!important}
   .tariff-select-pair{grid-template-columns:1fr}
 }
+
+
+/* v28: rate previews, multi-rule shifting, selectable summary grouping */
+.rate-input-row{display:grid;grid-template-columns:minmax(90px,120px) minmax(0,1fr);gap:9px;align-items:center}
+.rate-input-row>input{min-width:0}
+.rate-preview{min-height:36px;display:flex;align-items:center;padding:6px 9px;border:1px solid #dbe4ef;border-radius:8px;background:#f8fafc;color:#475569;font-size:11.5px;line-height:1.3;white-space:normal}
+.shift-head-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.shift-master-row{display:grid;grid-template-columns:minmax(180px,260px) minmax(0,1fr);gap:12px;align-items:end}
+.shift-rule-list{display:grid;gap:10px;margin-top:12px}
+.shift-rule{border:1px solid #dfe5ee;border-radius:10px;background:#fbfcfe;padding:11px 12px;min-width:0}
+.shift-rule-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.shift-rule-title{font-size:12.5px;font-weight:800;color:#334155}
+.shift-rule-grid{display:grid;grid-template-columns:minmax(145px,1fr) minmax(145px,1fr) minmax(220px,1.35fr) minmax(150px,.9fr);gap:10px;align-items:end}
+.shift-rule .sliderpair{grid-template-columns:86px minmax(90px,1fr)}
+.shift-rule .field label{font-size:11px}
+.shift-rule .field select,.shift-rule .field input{height:34px;font-size:12px}
+.shift-rule-delete{height:29px;font-size:11px;padding:0 9px;color:#b91c1c;border-color:#fecaca;background:#fff}
+.shift-rule-summary{font-size:10.5px;color:#64748b;margin-top:7px;line-height:1.35}
+.summary-tabs{display:inline-flex;gap:4px;padding:3px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:9px;margin:0 0 10px}
+.summary-tab{height:30px;border:none;background:transparent;border-radius:6px;padding:0 11px;font-size:11.5px;font-weight:700;color:#64748b}
+.summary-tab.active{background:#fff;color:#1d4ed8;box-shadow:0 1px 2px rgba(15,23,42,.08)}
+@media(max-width:1100px){.shift-rule-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.shift-master-row{grid-template-columns:1fr}.rate-input-row{grid-template-columns:105px minmax(0,1fr)}}
+@media(max-width:650px){.shift-rule-grid{grid-template-columns:1fr}.rate-input-row{grid-template-columns:1fr}.shift-head-actions{margin-left:0}.statusline{flex-wrap:wrap}}
+
 </style>
 </head>
 <body>
@@ -443,9 +467,9 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <div class="field"><label>할인시간</label><input disabled="" id="discountHours"/></div>
 <div class="field"><label>인상시간</label><input disabled="" id="peakHours"/></div>
 </div>
-<div class="grid controls" id="pctRateControls" style="grid-template-columns:repeat(2,minmax(160px,1fr));margin-top:10px">
-<div class="field"><label>할인율 (%)</label><input id="discountPct" max="100" min="0" step="0.1" type="number" value="51.0"/></div>
-<div class="field"><label>인상률 (%)</label><input id="upliftPct" min="0" step="0.1" type="number" value="50.0"/></div>
+<div class="grid controls" id="pctRateControls" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px">
+<div class="field"><label>할인율 (%)</label><div class="rate-input-row"><input id="discountPct" max="100" min="0" step="0.1" type="number" value="51.0"/><div class="rate-preview" id="discountRatePreview">적용단가 계산 중</div></div></div>
+<div class="field"><label>인상률 (%)</label><div class="rate-input-row"><input id="upliftPct" min="0" step="0.1" type="number" value="50.0"/><div class="rate-preview" id="upliftRatePreview">적용단가 계산 중</div></div></div>
 </div>
 <div class="grid controls" id="fixedRateControls" style="grid-template-columns:repeat(3,minmax(150px,1fr));margin-top:10px;display:none">
 <div class="field"><label>할인시간 단가 (원/kWh)</label><input id="fixedDiscRate" min="0" placeholder="직접 입력" step="0.1" type="number"/></div>
@@ -468,30 +492,19 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 </div>
 <div class="note" id="cosyPriceNote" style="margin-top:8px">위 행은 선택한 <b>기준 요금제의 현행 시간대</b>를 고정 표시하고, 아래 행만 클릭하여 변경함. <span id="pctPriceNote">비율 조정 방식에서는 일반용(갑)Ⅰ 저압의 해당 계절 전력량단가를 기준으로 할인시간 <b id="discMultTxt">49%</b>, 인상시간 <b id="upMultTxt">150%</b>, 일반시간 100%를 적용함.</span><span id="fixedPriceNote" style="display:none">직접 단가 방식에서는 사용자가 입력한 할인·일반·인상 시간대별 고정단가(원/kWh)를 계절과 관계없이 적용함. 비어 있는 단가는 해당 계절 일반용(저압) 단가로 처리함.</span></div>
 </div><div class="panel settings-card shift-settings">
-<div class="statusline"><h2 style="margin:0">부하이전 시나리오</h2><span class="badge off" id="shiftPanelBadge">부하이전 없음</span></div>
-<div class="shift-controls">
+<div class="statusline"><h2 style="margin:0">부하이전 시나리오</h2><div class="shift-head-actions"><span class="badge off" id="shiftPanelBadge">부하이전 없음</span><button id="addShiftRule" type="button">+ 이전규칙 추가</button></div></div>
+<div class="shift-master-row">
 <div class="field"><label>부하이전 적용</label><select id="loadShiftMode"><option selected="" value="off">부하이전 없음</option><option value="on">부하이전 적용</option></select></div>
-<div class="field"><label>이전율 (%)</label><div class="sliderpair"><input id="shiftPct" max="100" min="0" step="0.1" type="number" value="30.0"/><input id="shiftPctSlider" max="100" min="0" step="0.1" type="range" value="30"/></div></div>
-<div class="field"><label>할인시간 배분 방식</label><select id="shiftDistribution"><option selected="" value="equal">균등배분</option><option value="pattern">기존 할인시간 패턴 비례</option></select></div>
-<div class="field"><label>원천 시간대</label><input disabled="" id="sourceHoursSummary"/></div>
+<div class="note">복수 규칙을 동시에 적용할 수 있음. 각 규칙의 이전율은 <b>해당 원천시간대의 기존 사용량</b>을 기준으로 적용하며, 동일 원천시간이 여러 규칙에 중복되면 합계 100%를 초과하지 않도록 자동 제한함.</div>
 </div>
-<div class="note" style="margin-top:10px">원천 시간대 블록을 클릭해 포함·제외함. 현재 <b>할인시간</b>은 목적지이므로 원천으로 선택할 수 없음. 부하이전은 고객별·날짜별로 같은 날 안에서만 수행하며 일 사용량 총계는 보존함.</div>
-<div class="tariff-compare" style="margin-top:10px">
-<div class="tariff-row">
-<div class="tariff-row-label">원천 시간대</div>
-<div class="tariff-strip" id="sourceHourStrip"></div>
-</div>
-</div>
-<div class="modehint">
-<div class="hourlegend"><span><i class="swatch peak" style="background:#ffedd5;border-color:#fed7aa"></i>이전 원천</span><span><i class="swatch disc"></i>할인 목적지</span><span><i class="swatch normal"></i>미선택</span></div>
-<div class="actions"><button id="sourceFromPeak">현재 인상시간을 원천으로</button></div>
-</div>
+<div id="shiftRules" class="shift-rule-list"></div>
+<div class="note" style="margin-top:10px">원천·목적 시간대는 <b>계시별(경/중/최)</b> 또는 현재 Cosy 시나리오의 <b>할인/일반/인상</b> 구분에서 선택함. 각 규칙은 고객별·날짜별 같은 날 안에서 적용하며, 이전된 부하는 다른 규칙의 원천부하로 다시 이동시키지 않음.</div>
 <div class="shift-summary">
 <div class="shift-stat"><div class="sl">분석기간 총 이전량</div><div class="sv" id="shiftMovedKwh">0 kWh</div></div>
 <div class="shift-stat"><div class="sl">원천 감소량</div><div class="sv" id="shiftSourceDecreaseKwh">0 kWh</div></div>
 <div class="shift-stat"><div class="sl">목적 증가량</div><div class="sv" id="shiftDestIncreaseKwh">0 kWh</div></div>
-<div class="shift-stat"><div class="sl">원천시간 사용량 중 이전 비중</div><div class="sv" id="shiftRateDisplay">0%</div></div>
-<div class="shift-stat"><div class="sl">배분 방식</div><div class="sv" id="shiftDistDisplay">부하이전 없음</div></div>
+<div class="shift-stat"><div class="sl">활성 이전규칙</div><div class="sv" id="shiftRateDisplay">0개</div></div>
+<div class="shift-stat"><div class="sl">규칙 구성</div><div class="sv" id="shiftDistDisplay">부하이전 없음</div></div>
 <div class="shift-stat"><div class="sl">사용량 보존 검증</div><div class="sv" id="shiftConservation">-</div></div>
 </div>
 </div><div class="pane-heading results-heading analysis-result-heading">분석 결과</div><div class="grid kpis">
@@ -546,8 +559,9 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <div class="note" id="deploymentNote" style="margin-top:10px">현재 부하이전은 에너지를 절감하지 않고 시간대만 이동하므로 연간 전력절감량과 고정 배출계수 기준 CO₂ 절감량은 0이 원칙임.</div>
 </div>
 <div class="panel" id="hourlyChangePanel"><h2>시간별 전력사용량 및 변화 요약</h2>
-<div class="note" style="margin-bottom:10px">먼저 경·중·최대부하 3개 구간에서 <b>사용량 변화와 요금변화</b>를 요약하고, 아래 스크롤 표에서 00~23시 상세 변화를 확인함. 24시간 상세표는 고정 높이로 표시하여 전체 페이지 길이를 줄임.</div>
-<h3 style="margin:0 0 7px;font-size:14px">경·중·최대부하 시간대 요약</h3>
+<div class="note" style="margin-bottom:8px">요약 기준을 선택하여 <b>계시별 경·중·최</b> 또는 <b>Cosy 시나리오의 할인·일반·인상 시간대</b> 기준으로 사용량과 요금 변화를 확인함.</div>
+<div class="summary-tabs" role="group" aria-label="시간대 요약 기준"><button type="button" class="summary-tab active" data-summary-mode="tou">계시별 시간대</button><button type="button" class="summary-tab" data-summary-mode="cosy">시나리오 시간대</button></div>
+<h3 id="loadBandSummaryTitle" style="margin:0 0 7px;font-size:14px">계시별 시간대 요약</h3>
 <div class="load-band-split">
   <div class="load-band-box">
     <h4>사용량 변화</h4>
@@ -561,9 +575,9 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <h3 style="margin:0 0 6px;font-size:14px">분석 표본 · 24시간 평균 사용량</h3>
 <div class="hourly-scroll"><div class="tablewrap"><table id="hourlyChangeTable"><thead><tr><th>시간</th><th>부하</th><th>기준 평균</th><th>시나리오 평균</th><th>변화량</th><th>변화율</th></tr></thead><tbody></tbody></table></div></div>
 <div class="sep"></div>
-<h3 style="margin:0 0 6px;font-size:14px">보급확대 반영 · 가입자 전체 연간 24시간 사용량</h3>
+<h3 style="margin:0 0 6px;font-size:14px">보급확대 반영 · 가입자 전체 연간 시간대별 누적 사용량</h3>
 <div class="note" id="hourlyDeploymentBasis" style="margin-bottom:8px">2025년 16가구 고정표본 × 예상 가입가구 기준</div>
-<div class="hourly-scroll"><div class="tablewrap"><table id="hourlyDeploymentTable"><thead><tr><th>시간</th><th>부하</th><th>기준 전체</th><th>시나리오 전체</th><th>전체 변화량</th><th>변화율</th></tr></thead><tbody></tbody></table></div></div>
+<div class="hourly-scroll"><div class="tablewrap"><table id="hourlyDeploymentTable"><thead><tr><th>시간</th><th>부하</th><th>기준 연간누적</th><th>시나리오 연간누적</th><th>연간 변화량</th><th>변화율</th></tr></thead><tbody></tbody></table></div></div>
 <div class="note" id="hourlyDeploymentSummary" style="margin-top:8px">시간별 증가·감소량을 합산하면 현재 총사용량 보존 가정에서는 순 연간 사용량 변화가 0에 수렴함.</div>
 </div>
 <div class="panel"><h2>월별 기준안·시나리오 비교</h2><div class="chartbox"><canvas id="monthlyChart"></canvas></div><div class="legend"><span id="legendBase" style="color:#475569">기준안</span><span id="legendScenario" style="color:#0f766e">시나리오</span></div></div><div class="grid two">
@@ -620,11 +634,13 @@ const fmtKwh=x=>Number.isFinite(x)?x.toLocaleString('ko-KR',{maximumFractionDigi
 const fmtPct=x=>Number.isFinite(x)?(x>=0?'+':'')+x.toFixed(1)+'%':'-';
 const fmtRate=x=>Number.isFinite(x)?x.toLocaleString('ko-KR',{maximumFractionDigits:1})+'원/kWh':'-';
 let cosyHours=Array(24).fill('normal');
-let sourceHours=Array(24).fill(false);
-function resetSourceHours(){sourceHours=Array(24).fill(false);for(let h=16;h<22;h++)sourceHours[h]=true}
-function sourceFromCurrentPeak(){sourceHours=cosyHours.map(st=>st==='peak');renderSourceHourStrip()}
+let shiftRules=[];
+let nextShiftRuleId=1;
+let summaryGroupMode='tou';
+function defaultShiftRule(){return {id:nextShiftRuleId++,source:'touPeak',dest:'cosyDisc',rate:30,distribution:'equal'}}
+function resetShiftRules(){shiftRules=[defaultShiftRule()]}
 function resetCosyHours(){cosyHours=Array(24).fill('normal');for(let h=4;h<7;h++)cosyHours[h]='disc';for(let h=13;h<16;h++)cosyHours[h]='disc';for(let h=22;h<24;h++)cosyHours[h]='disc';for(let h=16;h<22;h++)cosyHours[h]='peak'}
-resetCosyHours();resetSourceHours();
+resetCosyHours();resetShiftRules();
 function seasonOf(m){if([3,4,5].includes(m))return'spring';if([6,7,8].includes(m))return'summer';if([9,10].includes(m))return'autumn';return'winter'}
 function generalRate(m){if([6,7,8].includes(m))return 132.4;if([3,4,5,9,10].includes(m))return 91.9;return 119.0}
 function touRate(m,h){const shoulder=[3,4,5,9,10].includes(m);let r=shoulder?[125.8,153.8,172.4]:[138.7,184.7,220.5];if(h>=22||h<8)return r[0];if(h<16)return r[1];return r[2]}
@@ -633,19 +649,27 @@ function isPeakHour(h){return cosyHours[h]==='peak'}
 function cosyMult(h){const d=Math.max(0,Math.min(100,+$('discountPct').value||0));const u=Math.max(0,+$('upliftPct').value||0);return isDiscountHour(h)?1-d/100:isPeakHour(h)?1+u/100:1}
 function nonnegInput(id,fallback){const raw=$(id).value.trim();if(raw==='')return fallback;const v=Number(raw);return Number.isFinite(v)&&v>=0?v:fallback}
 function cosyRate(m,h){const gr=generalRate(m);if($('cosyPriceMode').value==='fixed'){if(isDiscountHour(h))return nonnegInput('fixedDiscRate',gr);if(isPeakHour(h))return nonnegInput('fixedPeakRate',gr);return nonnegInput('fixedNormalRate',gr)}return gr*cosyMult(h)}
-function updatePriceModeUI(){const fixed=$('cosyPriceMode').value==='fixed';$('pctRateControls').style.display=fixed?'none':'grid';$('fixedRateControls').style.display=fixed?'grid':'none';$('pctPriceNote').style.display=fixed?'none':'inline';$('fixedPriceNote').style.display=fixed?'inline':'none';$('peakHours').value=summarizeHours('peak')}
+function updatePctRatePreview(){const d=Math.max(0,Math.min(100,+$('discountPct').value||0)),u=Math.max(0,+$('upliftPct').value||0),fmt=x=>x.toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});const rates=[['봄·가을',91.9],['여름',132.4],['겨울',119.0]];$('discountRatePreview').textContent='적용단가 · '+rates.map(([n,r])=>n+' '+fmt(r*(1-d/100))).join(' · ')+' 원/kWh';$('upliftRatePreview').textContent='적용단가 · '+rates.map(([n,r])=>n+' '+fmt(r*(1+u/100))).join(' · ')+' 원/kWh'}
+function updatePriceModeUI(){const fixed=$('cosyPriceMode').value==='fixed';$('pctRateControls').style.display=fixed?'none':'grid';$('fixedRateControls').style.display=fixed?'grid':'none';$('pctPriceNote').style.display=fixed?'none':'inline';$('fixedPriceNote').style.display=fixed?'inline':'none';$('peakHours').value=summarizeHours('peak');updatePctRatePreview()}
 function progBill(m,kwh){const summer=[7,8].includes(m),b1=summer?300:200,b2=summer?450:400;let x=kwh,b=0,a=Math.min(x,b1);b+=a*120;x-=a;if(x>0){a=Math.min(x,b2-b1);b+=a*214.6;x-=a}if(x>0){if([1,2,7,8,12].includes(m)){a=Math.min(x,Math.max(0,1000-b2));b+=a*307.3;x-=a;if(x>0)b+=x*736.2}else b+=x*307.3}return b}
 function matchFilters(r, ignoreWeekday=false){const [c,y,m,d,w]=r;const Y=$('year').value,M=$('month').value,C=$('customer').value,S=$('season').value,W=$('weekday').value;if(Y!=='all'&&+Y!==y)return false;if(M!=='all'&&+M!==m)return false;if(C!=='all'&&C!==c)return false;if(S!=='all'&&seasonOf(m)!==S)return false;if(!ignoreWeekday&&W!=='all'){if(W==='weekday'&&w>4)return false;if(W==='weekend'&&w<5)return false;if(/^[0-6]$/.test(W)&&+W!==w)return false}return true}
 function buildMonthParams(){const totals=new Map();for(const r of RAW){if(!matchFilters(r,true))continue;const key=r[0]+'|'+r[1]+'|'+r[2];let u=totals.get(key)||0;for(let h=0;h<24;h++){const v=r[5+h];if(v!=null)u+=v}totals.set(key,u)}const progEff=new Map(),touSuperFrac=new Map();for(const [k,u] of totals){const m=+k.split('|')[2];progEff.set(k,u>0?progBill(m,u)/u:0);const superMonth=[1,2,6,7,8,11,12].includes(m);touSuperFrac.set(k,superMonth&&u>1000?(u-1000)/u:0)}return {progEff,touSuperFrac}}
 function tariffValue(x,key){return x?.[key]??0}
-function shiftEnabled(){return $('loadShiftMode').value==='on'}
-function shiftRate(){return Math.max(0,Math.min(100,+$('shiftPct').value||0))/100}
-function destinationHoursForRow(vals){const arr=[];for(let h=0;h<24;h++)if(isDiscountHour(h)&&vals[h]!=null)arr.push(h);return arr}
-function effectiveSourceHoursForRow(vals){const arr=[];for(let h=0;h<24;h++)if(sourceHours[h]&&!isDiscountHour(h)&&vals[h]!=null)arr.push(h);return arr}
-function shiftDailyValues(vals){const out=vals.map(v=>v==null?null:+v);if(!shiftEnabled())return {values:out,moved:0,source:0,sourceDecrease:0,destIncrease:0};const rate=shiftRate(),src=effectiveSourceHoursForRow(vals),dest=destinationHoursForRow(vals);if(rate<=0||!src.length||!dest.length)return {values:out,moved:0,source:0,sourceDecrease:0,destIncrease:0};let srcTotal=0,sourceDecrease=0;for(const h of src){const v=Math.max(0,+vals[h]||0);srcTotal+=v;const cut=v*rate;out[h]=v-cut;sourceDecrease+=cut}const moved=sourceDecrease;if(moved<=0)return {values:out,moved:0,source:srcTotal,sourceDecrease:0,destIncrease:0};let weights=[];if($('shiftDistribution').value==='pattern'){let denom=0;for(const h of dest)denom+=Math.max(0,+vals[h]||0);if(denom>0)weights=dest.map(h=>Math.max(0,+vals[h]||0)/denom)}if(!weights.length)weights=dest.map(()=>1/dest.length);let allocated=0;for(let i=0;i<dest.length;i++){const h=dest[i];const add=i===dest.length-1?moved-allocated:moved*weights[i];out[h]=(+vals[h]||0)+add;allocated+=add}const destIncrease=allocated;return {values:out,moved,source:srcTotal,sourceDecrease,destIncrease}}
-function summarizeSourceHours(){const ranges=[];let start=null;for(let h=0;h<=24;h++){const active=h<24&&sourceHours[h]&&!isDiscountHour(h);if(active&&start===null)start=h;if(!active&&start!==null){ranges.push([start,h]);start=null}}if(!ranges.length)return'없음';return ranges.map(([a,b])=>String(a).padStart(2,'0')+'~'+String(b).padStart(2,'0')).join(' / ')}
-function renderSourceHourStrip(){if(!$('sourceHourStrip'))return;let strip='';for(let h=0;h<24;h++){const dest=isDiscountHour(h),sel=sourceHours[h]&&!dest;const cls=dest?'dest':sel?'selected':'';const txt=dest?'목적':sel?'원천':'-';strip+=`<div class="source-hour ${cls}" data-source-hour="${h}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${dest?'할인 목적지':sel?'이전 원천시간':'미선택'}"><span>${String(h).padStart(2,'0')}</span><span style="font-size:9px">${txt}</span></div>`}$('sourceHourStrip').innerHTML=strip;$('sourceHoursSummary').value=summarizeSourceHours();document.querySelectorAll('#sourceHourStrip .source-hour').forEach(el=>el.addEventListener('click',()=>{const h=+el.dataset.sourceHour;if(isDiscountHour(h))return;sourceHours[h]=!sourceHours[h];renderSourceHourStrip();calculate()}))}
-function updateShiftUI(){const on=shiftEnabled();$('shiftPct').disabled=!on;$('shiftPctSlider').disabled=!on;$('shiftDistribution').disabled=!on;$('shiftPanelBadge').textContent=on?'부하이전 적용':'부하이전 없음';$('shiftPanelBadge').className='badge '+(on?'scenario':'off');$('loadShiftBadge').textContent=on?'부하이전 적용':'부하이전 미적용';$('loadShiftBadge').className='badge '+(on?'scenario':'off');renderSourceHourStrip()}
+function shiftEnabled(){return $('loadShiftMode').value==='on'&&shiftRules.length>0}
+const SHIFT_GROUP_OPTIONS=[
+ ['touOff','경부하 (22~08)'],['touMid','중간부하 (08~16)'],['touPeak','최대부하 (16~22)'],
+ ['cosyDisc','할인시간'],['cosyNormal','일반시간'],['cosyPeak','인상시간']
+];
+function shiftGroupLabel(key){return Object.fromEntries(SHIFT_GROUP_OPTIONS)[key]||key}
+function hoursForShiftGroup(key,vals){const out=[];for(let h=0;h<24;h++){if(vals&&vals[h]==null)continue;let on=false;if(key==='touOff')on=h>=22||h<8;else if(key==='touMid')on=h>=8&&h<16;else if(key==='touPeak')on=h>=16&&h<22;else if(key==='cosyDisc')on=cosyHours[h]==='disc';else if(key==='cosyNormal')on=cosyHours[h]==='normal';else if(key==='cosyPeak')on=cosyHours[h]==='peak';if(on)out.push(h)}return out}
+function summarizeShiftGroup(key){const mask=Array(24).fill(false);for(const h of hoursForShiftGroup(key,null))mask[h]=true;const ranges=[];let st=null;for(let h=0;h<=24;h++){const on=h<24&&mask[h];if(on&&st===null)st=h;if(!on&&st!==null){ranges.push([st,h]);st=null}}return ranges.length?ranges.map(([a,b])=>String(a).padStart(2,'0')+'~'+String(b).padStart(2,'0')).join(' / '):'없음'}
+function shiftRuleOptions(selected){return SHIFT_GROUP_OPTIONS.map(([v,l])=>`<option value="${v}" ${v===selected?'selected':''}>${l}</option>`).join('')}
+function renderShiftRules(){const box=$('shiftRules');if(!box)return;box.innerHTML='';const enabled=$('loadShiftMode').value==='on';shiftRules.forEach((r,idx)=>{const el=document.createElement('div');el.className='shift-rule';el.dataset.ruleId=r.id;el.innerHTML=`<div class="shift-rule-head"><div class="shift-rule-title">이전규칙 ${idx+1}</div><button class="shift-rule-delete" type="button" data-action="delete" ${shiftRules.length<=1?'disabled':''}>삭제</button></div><div class="shift-rule-grid"><div class="field"><label>원천 시간대</label><select data-field="source" ${enabled?'':'disabled'}>${shiftRuleOptions(r.source)}</select></div><div class="field"><label>목적 시간대</label><select data-field="dest" ${enabled?'':'disabled'}>${shiftRuleOptions(r.dest)}</select></div><div class="field"><label>이전율 (%)</label><div class="sliderpair"><input data-field="rate" type="number" min="0" max="100" step="0.1" value="${Number(r.rate).toFixed(1)}" ${enabled?'':'disabled'}/><input data-field="rateSlider" type="range" min="0" max="100" step="0.1" value="${Number(r.rate)}" ${enabled?'':'disabled'}/></div></div><div class="field"><label>목적시간 배분</label><select data-field="distribution" ${enabled?'':'disabled'}><option value="equal" ${r.distribution==='equal'?'selected':''}>균등배분</option><option value="pattern" ${r.distribution==='pattern'?'selected':''}>기존 패턴 비례</option></select></div></div><div class="shift-rule-summary">${shiftGroupLabel(r.source)} (${summarizeShiftGroup(r.source)}) → ${shiftGroupLabel(r.dest)} (${summarizeShiftGroup(r.dest)}) · ${Number(r.rate).toFixed(1)}%</div>`;box.appendChild(el)});
+ box.querySelectorAll('.shift-rule').forEach(el=>{const id=+el.dataset.ruleId,r=shiftRules.find(x=>x.id===id);if(!r)return;el.querySelector('[data-action="delete"]')?.addEventListener('click',()=>{if(shiftRules.length<=1)return;shiftRules=shiftRules.filter(x=>x.id!==id);renderShiftRules();calculate()});for(const f of ['source','dest','distribution'])el.querySelector(`[data-field="${f}"]`)?.addEventListener('change',e=>{r[f]=e.target.value;renderShiftRules();calculate()});const n=el.querySelector('[data-field="rate"]'),sl=el.querySelector('[data-field="rateSlider"]');n?.addEventListener('input',()=>{r.rate=Math.max(0,Math.min(100,+n.value||0));sl.value=r.rate;el.querySelector('.shift-rule-summary').textContent=`${shiftGroupLabel(r.source)} (${summarizeShiftGroup(r.source)}) → ${shiftGroupLabel(r.dest)} (${summarizeShiftGroup(r.dest)}) · ${Number(r.rate).toFixed(1)}%`;calculate()});sl?.addEventListener('input',()=>{r.rate=+sl.value;n.value=Number(r.rate).toFixed(1);el.querySelector('.shift-rule-summary').textContent=`${shiftGroupLabel(r.source)} (${summarizeShiftGroup(r.source)}) → ${shiftGroupLabel(r.dest)} (${summarizeShiftGroup(r.dest)}) · ${Number(r.rate).toFixed(1)}%`;calculate()})})
+ $('addShiftRule').disabled=!enabled;
+}
+function shiftDailyValues(vals){const out=vals.map(v=>v==null?null:+v);if(!shiftEnabled())return {values:out,moved:0,source:0,sourceDecrease:0,destIncrease:0,ruleMoves:[]};const original=vals.map(v=>v==null?0:Math.max(0,+v||0)),available=original.slice();let moved=0,source=0,sourceDecrease=0,destIncrease=0;const ruleMoves=[];for(const rule of shiftRules){const rate=Math.max(0,Math.min(100,+rule.rate||0))/100;if(rate<=0)continue;const src=hoursForShiftGroup(rule.source,vals),srcSet=new Set(src),dest=hoursForShiftGroup(rule.dest,vals).filter(h=>!srcSet.has(h));if(!src.length||!dest.length)continue;let ruleMoved=0,ruleSource=0;for(const h of src){ruleSource+=original[h];const cut=Math.min(available[h],original[h]*rate);if(cut<=0)continue;available[h]-=cut;out[h]=Math.max(0,(out[h]??0)-cut);ruleMoved+=cut}if(ruleMoved<=0)continue;let weights=[];if(rule.distribution==='pattern'){let denom=0;for(const h of dest)denom+=original[h];if(denom>0)weights=dest.map(h=>original[h]/denom)}if(!weights.length)weights=dest.map(()=>1/dest.length);let allocated=0;for(let i=0;i<dest.length;i++){const h=dest[i],add=i===dest.length-1?ruleMoved-allocated:ruleMoved*weights[i];out[h]=(out[h]??0)+add;allocated+=add}moved+=ruleMoved;source+=ruleSource;sourceDecrease+=ruleMoved;destIncrease+=allocated;ruleMoves.push({id:rule.id,moved:ruleMoved})}return {values:out,moved,source,sourceDecrease,destIncrease,ruleMoves}}
+function updateShiftUI(){const on=$('loadShiftMode').value==='on';$('shiftPanelBadge').textContent=on?'부하이전 적용':'부하이전 없음';$('shiftPanelBadge').className='badge '+(on?'scenario':'off');$('loadShiftBadge').textContent=on?'부하이전 적용':'부하이전 미적용';$('loadShiftBadge').className='badge '+(on?'scenario':'off');$('addShiftRule').disabled=!on;document.querySelectorAll('#shiftRules select,#shiftRules input').forEach(el=>el.disabled=!on)}
 function summarizeHours(state){const ranges=[];let start=null;for(let h=0;h<=24;h++){const active=h<24&&cosyHours[h]===state;if(active&&start===null)start=h;if(!active&&start!==null){ranges.push([start,h]);start=null}}if(!ranges.length)return'없음';return ranges.map(([a,b])=>String(a).padStart(2,'0')+'~'+String(b).padStart(2,'0')).join(' / ')}
 function hourStateLabel(st){return st==='disc'?'할인':st==='peak'?'인상':'일반'}
 function touBandKey(h){return (h>=22||h<8)?'off':h<16?'mid':'peak'}
@@ -653,8 +677,9 @@ function touBandShort(h){return touBandKey(h)==='off'?'경':touBandKey(h)==='mid
 function baselineHourState(h){const base=$('baseTariff').value;if(base==='t'){if(h>=22||h<8)return'disc';if(h<16)return'normal';return'peak'}return'normal'}
 function nextHourState(st){return st==='disc'?'normal':st==='normal'?'peak':'disc'}
 function renderBaselineTariffStrip(){const base=$('baseTariff').value;let strip='';for(let h=0;h<24;h++){const st=baselineHourState(h),band=touBandShort(h);strip+=`<div class="hour fixed ${st}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · TOU ${band} · 기준 시간대(편집 불가)"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span><span class="tb">${band}</span></div>`}$('baselineTariffStrip').innerHTML=strip;$('baselineTimeLabel').textContent='현행 기준 · '+TARIFF_NAMES[base]}
-function renderTariffStrip(){renderBaselineTariffStrip();let strip='';for(let h=0;h<24;h++){const st=cosyHours[h],band=touBandShort(h);strip+=`<div class="hour ${st}" data-hour="${h}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · TOU ${band} · 클릭: 할인→일반→인상 순환"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span><span class="tb">${band}</span></div>`}$('tariffStrip').innerHTML=strip;$('discountHours').value=summarizeHours('disc');$('peakHours').value=summarizeHours('peak');renderSourceHourStrip();document.querySelectorAll('#tariffStrip .hour').forEach(el=>el.addEventListener('click',()=>{const h=+el.dataset.hour;cosyHours[h]=nextHourState(cosyHours[h]);renderTariffStrip();calculate()}))}
+function renderTariffStrip(){renderBaselineTariffStrip();let strip='';for(let h=0;h<24;h++){const st=cosyHours[h],band=touBandShort(h);strip+=`<div class="hour ${st}" data-hour="${h}" title="${String(h).padStart(2,'0')}:00~${String(h+1).padStart(2,'0')}:00 · ${hourStateLabel(st)} · TOU ${band} · 클릭: 할인→일반→인상 순환"><span class="hn">${String(h).padStart(2,'0')}</span><span class="hs">${hourStateLabel(st)}</span><span class="tb">${band}</span></div>`}$('tariffStrip').innerHTML=strip;$('discountHours').value=summarizeHours('disc');$('peakHours').value=summarizeHours('peak');renderShiftRules();document.querySelectorAll('#tariffStrip .hour').forEach(el=>el.addEventListener('click',()=>{const h=+el.dataset.hour;cosyHours[h]=nextHourState(cosyHours[h]);renderTariffStrip();calculate()}))}
 let LAST_BY_HOUR=null;
+let LAST_BASE_KEY='g';
 let LAST_SCENARIO_KEY='o';
 function calculate(){
  const {progEff,touSuperFrac}=buildMonthParams();
@@ -673,12 +698,12 @@ function render(total,byMonth,byCust,byHour,bySW){
  const custCount=byCust.size,d=+($('discountPct').value||0),u=+($('upliftPct').value||0);$('discMultTxt').textContent=(100-d).toFixed(1)+'%';$('upMultTxt').textContent=(100+u).toFixed(1)+'%';updatePriceModeUI();updateShiftUI();
  {const _b=$('baseNameTop'),_s=$('scenarioNameTop');if(_b)_b.textContent=TARIFF_NAMES[baseKey];if(_s)_s.textContent=TARIFF_NAMES[scenarioKey];}$('kBaseLabel').textContent='기준 · '+TARIFF_NAMES[baseKey];$('kScenarioLabel').textContent='시나리오 · '+TARIFF_NAMES[scenarioKey];
  $('cosyUseBadge').textContent=scenarioKey==='o'?'시나리오 적용 중':'HP 전용 선택 시 적용';$('cosyUseBadge').className='badge '+(scenarioKey==='o'?'scenario':'off');
- $('kUsage').textContent=fmtKwh(total.u);$('kCust').textContent=custCount+'개 고객 · 관측 '+total.n.toLocaleString()+'시간'+(shiftEnabled()?' · 이전 '+fmtKwh(total.shiftMoved):'');$('kBase').textContent=fmtWon(base);$('kScenario').textContent=fmtWon(scenario);$('shiftMovedKwh').textContent=fmtKwh(total.shiftMoved);$('shiftSourceDecreaseKwh').textContent=fmtKwh(total.shiftSourceDecrease);$('shiftDestIncreaseKwh').textContent=fmtKwh(total.shiftDestIncrease);$('shiftRateDisplay').textContent=shiftEnabled()?((shiftRate()*100).toFixed(1)+'%'):'0%';$('shiftDistDisplay').textContent=shiftEnabled()?($('shiftDistribution').value==='equal'?'균등배분':'기존 패턴 비례'):'부하이전 없음';const shiftGap=Math.abs(total.shiftSourceDecrease-total.shiftDestIncrease);$('shiftConservation').textContent=shiftEnabled()?(shiftGap<1e-6?'일치 ✓':'차이 '+fmtKwh(shiftGap)):'-';$('shiftConservation').className='sv '+(shiftEnabled()&&shiftGap>=1e-6?'bad':'good');
+ $('kUsage').textContent=fmtKwh(total.u);$('kCust').textContent=custCount+'개 고객 · 관측 '+total.n.toLocaleString()+'시간'+(shiftEnabled()?' · 이전 '+fmtKwh(total.shiftMoved):'');$('kBase').textContent=fmtWon(base);$('kScenario').textContent=fmtWon(scenario);$('shiftMovedKwh').textContent=fmtKwh(total.shiftMoved);$('shiftSourceDecreaseKwh').textContent=fmtKwh(total.shiftSourceDecrease);$('shiftDestIncreaseKwh').textContent=fmtKwh(total.shiftDestIncrease);$('shiftRateDisplay').textContent=shiftEnabled()?shiftRules.length+'개':'0개';$('shiftDistDisplay').textContent=shiftEnabled()?shiftRules.map((r,i)=>`${i+1}:${shiftGroupLabel(r.source)}→${shiftGroupLabel(r.dest)} ${Number(r.rate).toFixed(0)}%`).join(' · '):'부하이전 없음';const shiftGap=Math.abs(total.shiftSourceDecrease-total.shiftDestIncrease);$('shiftConservation').textContent=shiftEnabled()?(shiftGap<1e-6?'일치 ✓':'차이 '+fmtKwh(shiftGap)):'-';$('shiftConservation').className='sv '+(shiftEnabled()&&shiftGap>=1e-6?'bad':'good');
  const diff=scenario-base,pct=base?diff/base*100:NaN;$('kDiff').textContent=fmtWon(diff);$('kDiff').className='val '+(diff<0?'good':diff>0?'bad':'');$('kDiffPct').textContent=fmtPct(pct);$('kDiffPct').className='val '+(pct<0?'good':pct>0?'bad':'');
  const tariffs=[['g',total.g],['p',total.p],['t',total.t],['o',total.o]].filter(x=>Number.isFinite(x[1])&&total.u>0);tariffs.sort((a,b)=>a[1]-b[1]);$('kBest').textContent=tariffs.length?TARIFF_NAMES[tariffs[0][0]]:'-';$('kBestSub').textContent=tariffs.length&&base?('기준 대비 '+fmtPct((tariffs[0][1]/base-1)*100)):'-';
  renderSmpImpact(total,custCount);
  const tb=$('summaryTable').querySelector('tbody');tb.innerHTML='';const order=[['g',total.g],['p',total.p],['t',total.t],['o',total.o]],min=Math.min(...order.map(x=>x[1]));for(const [key,val] of order){const tr=document.createElement('tr'),dlt=val-base,pp=base?dlt/base*100:NaN;const tags=(key===baseKey?' <span class="badge off">기준</span>':'')+(key===scenarioKey?' <span class="badge scenario">시나리오</span>':'');if(key===scenarioKey)tr.className='selected-row';tr.innerHTML=`<td class="${val===min?'best':''}">${TARIFF_NAMES[key]}${tags}</td><td>${fmtWon(val)}</td><td class="${dlt<0?'good':dlt>0?'bad':''}">${key===baseKey?'기준':fmtWon(dlt)}</td><td class="${pp<0?'good':pp>0?'bad':''}">${key===baseKey?'-':fmtPct(pp)}</td><td>${fmtRate(total.u?val/total.u:NaN)}</td>`;tb.appendChild(tr)}
- renderLoadBandSummary(byHour,baseKey,scenarioKey);LAST_BY_HOUR=byHour;LAST_SCENARIO_KEY=scenarioKey;renderCustomer(byCust,baseKey,scenarioKey);renderTouBreak(bySW);drawHourly(byHour,scenarioKey);drawBillEffects(total,baseKey,scenarioKey);drawMonthly(byMonth,baseKey,scenarioKey);renderDeploymentEffects();
+ renderLoadBandSummary(byHour,baseKey,scenarioKey);LAST_BY_HOUR=byHour;LAST_BASE_KEY=baseKey;LAST_SCENARIO_KEY=scenarioKey;renderCustomer(byCust,baseKey,scenarioKey);renderTouBreak(bySW);drawHourly(byHour,scenarioKey);drawBillEffects(total,baseKey,scenarioKey);drawMonthly(byMonth,baseKey,scenarioKey);renderDeploymentEffects();
 }
 
 function renderSmpImpact(total,custCount){
@@ -703,30 +728,26 @@ function renderSmpImpact(total,custCount){
  for(const r of rows){const costNum=r[0]==='사용량 감소시간'?total.smpDecreaseEffect:r[0]==='사용량 증가시간'?total.smpIncreaseEffect:delta;const tr=document.createElement('tr');tr.innerHTML=`<td><b>${r[0]}</b></td><td>${r[1]}</td><td class="${costNum<0?'good':costNum>0?'bad':''}">${r[2]}</td><td>${r[3]}</td>`;tbody.appendChild(tr)}
 }
 
+function getSummaryBands(){if(summaryGroupMode==='cosy')return [
+ {name:'할인시간',hours:summarizeHours('disc'),test:h=>cosyHours[h]==='disc'},
+ {name:'일반시간',hours:summarizeHours('normal'),test:h=>cosyHours[h]==='normal'},
+ {name:'인상시간',hours:summarizeHours('peak'),test:h=>cosyHours[h]==='peak'}
+];return [
+ {name:'경부하',hours:'22:00~08:00',test:h=>h>=22||h<8},
+ {name:'중간부하',hours:'08:00~16:00',test:h=>h>=8&&h<16},
+ {name:'최대부하',hours:'16:00~22:00',test:h=>h>=16&&h<22}
+]}
 function renderLoadBandSummary(byHour,baseKey,scenarioKey){
  const utb=$('loadBandUsageTable')?.querySelector('tbody'),btb=$('loadBandBillTable')?.querySelector('tbody');if(!utb||!btb)return;utb.innerHTML='';btb.innerHTML='';
- const bands=[
-  {key:'off',name:'경부하',hours:'22:00~08:00',test:h=>h>=22||h<8},
-  {key:'mid',name:'중간부하',hours:'08:00~16:00',test:h=>h>=8&&h<16},
-  {key:'peak',name:'최대부하',hours:'16:00~22:00',test:h=>h>=16&&h<22}
- ];
- for(const band of bands){
+ $('loadBandSummaryTitle').textContent=summaryGroupMode==='cosy'?'시나리오 시간대 요약':'계시별 시간대 요약';document.querySelectorAll('.summary-tab').forEach(b=>b.classList.toggle('active',b.dataset.summaryMode===summaryGroupMode));
+ for(const band of getSummaryBands()){
   let baseUse=0,scenarioUse=0,baseBill=0,scenarioBill=0;
   for(let h=0;h<24;h++)if(band.test(h)){
-   const x=byHour?.[h]||{u:0,su:0,g:0,p:0,t:0,o:0};
-   baseUse+=x.u||0;
-   scenarioUse+=(scenarioKey==='o'&&shiftEnabled())?(x.su||0):(x.u||0);
-   baseBill+=Number(x[baseKey]||0);
-   scenarioBill+=Number(x[scenarioKey]||0);
+   const x=byHour?.[h]||{u:0,su:0,g:0,p:0,t:0,o:0};baseUse+=x.u||0;scenarioUse+=(scenarioKey==='o'&&shiftEnabled())?(x.su||0):(x.u||0);baseBill+=Number(x[baseKey]||0);scenarioBill+=Number(x[scenarioKey]||0)
   }
-  const useDelta=scenarioUse-baseUse,usePct=baseUse?useDelta/baseUse*100:(useDelta?NaN:0);
-  const billDelta=scenarioBill-baseBill,billPct=baseBill?billDelta/baseBill*100:(billDelta?NaN:0);
-  const utr=document.createElement('tr');
-  utr.innerHTML=`<td><b>${band.name}</b></td><td>${band.hours}</td><td>${fmtKwh(baseUse)}</td><td>${fmtKwh(scenarioUse)}</td><td class="${useDelta<0?'good':useDelta>0?'bad':''}">${useDelta>=0?'+':''}${fmtKwh(useDelta)}</td><td class="${usePct<0?'good':usePct>0?'bad':''}">${Number.isFinite(usePct)?(usePct>=0?'+':'')+usePct.toFixed(1)+'%':'-'}</td>`;
-  utb.appendChild(utr);
-  const btr=document.createElement('tr');
-  btr.innerHTML=`<td><b>${band.name}</b></td><td>${band.hours}</td><td>${fmtWon(baseBill)}</td><td>${fmtWon(scenarioBill)}</td><td class="${billDelta<0?'good':billDelta>0?'bad':''}">${billDelta>=0?'+':''}${fmtWon(billDelta)}</td><td class="${billPct<0?'good':billPct>0?'bad':''}">${Number.isFinite(billPct)?(billPct>=0?'+':'')+billPct.toFixed(1)+'%':'-'}</td>`;
-  btb.appendChild(btr);
+  const useDelta=scenarioUse-baseUse,usePct=baseUse?useDelta/baseUse*100:(useDelta?NaN:0),billDelta=scenarioBill-baseBill,billPct=baseBill?billDelta/baseBill*100:(billDelta?NaN:0);
+  const utr=document.createElement('tr');utr.innerHTML=`<td><b>${band.name}</b></td><td>${band.hours}</td><td>${fmtKwh(baseUse)}</td><td>${fmtKwh(scenarioUse)}</td><td class="${useDelta<0?'good':useDelta>0?'bad':''}">${useDelta>=0?'+':''}${fmtKwh(useDelta)}</td><td class="${usePct<0?'good':usePct>0?'bad':''}">${Number.isFinite(usePct)?(usePct>=0?'+':'')+usePct.toFixed(1)+'%':'-'}</td>`;utb.appendChild(utr);
+  const btr=document.createElement('tr');btr.innerHTML=`<td><b>${band.name}</b></td><td>${band.hours}</td><td>${fmtWon(baseBill)}</td><td>${fmtWon(scenarioBill)}</td><td class="${billDelta<0?'good':billDelta>0?'bad':''}">${billDelta>=0?'+':''}${fmtWon(billDelta)}</td><td class="${billPct<0?'good':billPct>0?'bad':''}">${Number.isFinite(billPct)?(billPct>=0?'+':'')+billPct.toFixed(1)+'%':'-'}</td>`;btb.appendChild(btr)
  }
 }
 
@@ -754,7 +775,7 @@ function renderHourlyUsageSummary(byHour,scenarioKey,annualHourly,subs){
   const x=annualHourly[h]||{baseAnnual:0,scenarioAnnual:0,deltaAnnual:0};const b=x.baseAnnual*subs,s=x.scenarioAnnual*subs,d=x.deltaAnnual*subs,pct=b?d/b*100:(d?NaN:0);if(d<0)dec+=d;else if(d>0)inc+=d;net+=d;const tr=document.createElement('tr');
   tr.innerHTML=`<td><b>${String(h).padStart(2,'0')}:00</b></td><td>${touBandShort(h)}</td><td>${fmtExpandedEnergyAbs(b)}</td><td>${fmtExpandedEnergyAbs(s)}</td><td class="${d<0?'good':d>0?'bad':''}">${fmtExpandedEnergy(d)}</td><td class="${pct<0?'good':pct>0?'bad':''}">${Number.isFinite(pct)?(pct>=0?'+':'')+pct.toFixed(1)+'%':'-'}</td>`;dtb.appendChild(tr)
  }
- if($('hourlyDeploymentBasis'))$('hourlyDeploymentBasis').innerHTML=`2025년 전체 16개 고객 고정표본의 가구당 연간 시간별 사용량 × 예상 가입가구 <b>${subs.toLocaleString()}가구</b> 기준. 현재 목표 보급가구수·가입률 변경 시 즉시 갱신됨.`;
+ if($('hourlyDeploymentBasis')){const h0=annualHourly[0]||{baseAnnual:0},avg0=h0.baseAnnual/365,total0=h0.baseAnnual*subs;$('hourlyDeploymentBasis').innerHTML=`각 행은 해당 시각의 <b>365일 연간 누적 사용량</b>임. 예: 00시 기준 가구당 평균 약 <b>${avg0.toFixed(3)} kWh/h</b> × 365일 × <b>${subs.toLocaleString()}가구</b> = 약 <b>${fmtExpandedEnergyAbs(total0)}</b>. 따라서 ${subs.toLocaleString()}가구를 한 시점에만 곱한 값은 ${ (avg0*subs/1000).toLocaleString('ko-KR',{maximumFractionDigits:2}) } MWh/h이고, 표의 값은 이를 1년간 누적한 에너지량임.`;}
  if($('hourlyDeploymentSummary'))$('hourlyDeploymentSummary').innerHTML=`가입자 전체 연간 시간별 변화 합계: 감소 <b class="good">${fmtExpandedEnergy(dec)}</b> · 증가 <b class="bad">${fmtExpandedEnergy(inc)}</b> · 순변화 <b>${fmtExpandedEnergy(net)}</b>. 현재 부하이전은 총 kWh 보존 방식이므로 감소와 증가가 상쇄되어 순변화는 0에 수렴함.`;
 }
 function scenarioOriginalCost(total,scenarioKey){if(scenarioKey==='o')return total.oOriginal;return tariffValue(total,scenarioKey)}
@@ -855,13 +876,13 @@ function drawMonthly(byMonth,baseKey,scenarioKey){const {ctx,w,h}=prepCanvas('mo
 function setup(){
  const y=$('year');y.innerHTML='<option value="all">전체 (2022~2026)</option>'+Object.keys(META.years).map(v=>`<option value="${v}" ${v==='2025'?'selected':''}>${v}년${v==='2026'?' (8/5까지)':''}</option>`).join('');for(let m=1;m<=12;m++)$('month').insertAdjacentHTML('beforeend',`<option value="${m}">${m}월</option>`);for(const c of META.customers)$('customer').insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`);$('sourceFile').textContent=META.source_file;
  renderTariffStrip();updatePriceModeUI();updateShiftUI();
- for(const id of ['year','month','customer','season','weekday','scenarioTariff','discountPct','upliftPct','cosyPriceMode','fixedDiscRate','fixedNormalRate','fixedPeakRate','loadShiftMode','shiftDistribution'])$(id).addEventListener('change',()=>{updateCoverage();updatePriceModeUI();updateShiftUI();calculate()});$('baseTariff').addEventListener('change',()=>{renderTariffStrip();updateCoverage();calculate()});$('discountPct').addEventListener('input',calculate);$('upliftPct').addEventListener('input',calculate);for(const id of ['fixedDiscRate','fixedNormalRate','fixedPeakRate'])$(id).addEventListener('input',calculate);
- const syncShift=(fromSlider=false)=>{if(fromSlider)$('shiftPct').value=(+$('shiftPctSlider').value).toFixed(1);else $('shiftPctSlider').value=Math.max(0,Math.min(100,+$('shiftPct').value||0));calculate()};$('shiftPct').addEventListener('input',()=>syncShift(false));$('shiftPctSlider').addEventListener('input',()=>syncShift(true));$('sourceFromPeak').onclick=()=>{sourceFromCurrentPeak();calculate()};
+ for(const id of ['year','month','customer','season','weekday','scenarioTariff','discountPct','upliftPct','cosyPriceMode','fixedDiscRate','fixedNormalRate','fixedPeakRate','loadShiftMode'])$(id).addEventListener('change',()=>{updateCoverage();updatePriceModeUI();updateShiftUI();calculate()});$('baseTariff').addEventListener('change',()=>{renderTariffStrip();updateCoverage();calculate()});$('discountPct').addEventListener('input',()=>{updatePctRatePreview();calculate()});$('upliftPct').addEventListener('input',()=>{updatePctRatePreview();calculate()});for(const id of ['fixedDiscRate','fixedNormalRate','fixedPeakRate'])$(id).addEventListener('input',calculate);
+ $('addShiftRule').addEventListener('click',()=>{shiftRules.push({id:nextShiftRuleId++,source:'touMid',dest:'touOff',rate:30,distribution:'equal'});renderShiftRules();calculate()});document.querySelectorAll('.summary-tab').forEach(b=>b.addEventListener('click',()=>{summaryGroupMode=b.dataset.summaryMode||'tou';if(LAST_BY_HOUR)renderLoadBandSummary(LAST_BY_HOUR,LAST_BASE_KEY,LAST_SCENARIO_KEY)}));
  const syncTarget=(fromSlider=false)=>{if(fromSlider){const v=Math.max(0,Math.min(200000,+$('targetHouseholdsSlider').value||0));$('targetHouseholds').value=fmtCommaInteger(v);}else{const v=Math.max(0,Math.min(200000,parseCommaNumber($('targetHouseholds').value)));$('targetHouseholds').value=fmtCommaInteger(v);$('targetHouseholdsSlider').value=v;}renderDeploymentEffects()};
  $('targetHouseholds').addEventListener('input',()=>syncTarget(false));$('targetHouseholds').addEventListener('blur',()=>syncTarget(false));$('targetHouseholdsSlider').addEventListener('input',()=>syncTarget(true));
  const syncPart=(fromSlider=false)=>{if(fromSlider)$('participationRate').value=(+$('participationRateSlider').value||0).toFixed(1);else{const v=Math.max(0,Math.min(100,+$('participationRate').value||0));$('participationRate').value=v.toFixed(1);$('participationRateSlider').value=v}renderDeploymentEffects()};
  $('participationRate').addEventListener('input',()=>syncPart(false));$('participationRateSlider').addEventListener('input',()=>syncPart(true));$('co2Factor').addEventListener('input',renderDeploymentEffects);
- $('resetScenario').onclick=()=>{$('cosyPriceMode').value='pct';$('discountPct').value='51.0';$('upliftPct').value='50.0';$('fixedDiscRate').value='';$('fixedNormalRate').value='';$('fixedPeakRate').value='';$('loadShiftMode').value='off';$('shiftPct').value='30.0';$('shiftPctSlider').value='30';$('shiftDistribution').value='equal';resetCosyHours();resetSourceHours();renderTariffStrip();updatePriceModeUI();updateShiftUI();calculate()};
+ $('resetScenario').onclick=()=>{$('cosyPriceMode').value='pct';$('discountPct').value='51.0';$('upliftPct').value='50.0';$('fixedDiscRate').value='';$('fixedNormalRate').value='';$('fixedPeakRate').value='';$('loadShiftMode').value='off';resetCosyHours();resetShiftRules();renderTariffStrip();updatePriceModeUI();updateShiftUI();calculate()};
  $('exportCsv').onclick=exportCsv;updateCoverage();calculate();
 }
 function updateCoverage(){} function exportCsv(){const baseKey=$('baseTariff').value,scenarioKey=$('scenarioTariff').value;const rows=[['고객ID','사용량(kWh)','기준요금제','기준요금(원)','시나리오요금제','시나리오요금(원)','증감액(원)','증감률(%)']];document.querySelectorAll('#customerTable tbody tr').forEach(tr=>{const td=[...tr.children].map(x=>x.textContent.replace(/,/g,''));if(td.length===6&&!td[0].includes('선택 조건'))rows.push([td[0],td[1].replace(' kWh',''),TARIFF_NAMES[baseKey],td[2].replace('원',''),TARIFF_NAMES[scenarioKey],td[3].replace('원',''),td[4].replace('원',''),td[5].replace('%','')])});const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='히트펌프_기준안_시나리오_분석결과.csv';a.click();URL.revokeObjectURL(a.href)}
