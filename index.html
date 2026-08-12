@@ -397,7 +397,13 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 .smp-tariff-row>.panel{min-width:0;height:100%}
 .smp-tariff-row .tablewrap{max-width:100%;overflow-x:visible}
 .smp-tariff-row table{width:100%;table-layout:fixed}
-.smp-tariff-row #smpCostTable th,.smp-tariff-row #smpCostTable td{font-size:11.5px;padding:8px 7px}
+.smp-tariff-row #smpCostTable{min-width:0!important;width:100%!important;table-layout:fixed!important}
+.smp-tariff-row #smpCostTable th,.smp-tariff-row #smpCostTable td{font-size:11.5px;padding:8px 6px;line-height:1.35}
+.smp-tariff-row #smpCostTable th:nth-child(1),.smp-tariff-row #smpCostTable td:nth-child(1){width:24%;white-space:normal;text-align:left;word-break:keep-all}
+.smp-tariff-row #smpCostTable th:nth-child(2),.smp-tariff-row #smpCostTable td:nth-child(2){width:17%;white-space:nowrap}
+.smp-tariff-row #smpCostTable th:nth-child(3),.smp-tariff-row #smpCostTable td:nth-child(3){width:20%;white-space:nowrap}
+.smp-tariff-row #smpCostTable th:nth-child(4),.smp-tariff-row #smpCostTable td:nth-child(4){width:39%;white-space:normal;text-align:left;word-break:keep-all;overflow-wrap:anywhere}
+.smp-tariff-row #smpCostNote,.smp-tariff-row #smpCostReference{white-space:normal;overflow-wrap:anywhere;word-break:keep-all;line-height:1.5}
 .smp-tariff-row #summaryTable th,.smp-tariff-row #summaryTable td{font-size:11.5px;padding:8px 6px}
 @media(max-width:1120px){
   .settings-pane .analysis-settings .analysis-grid-v24{grid-template-columns:repeat(2,minmax(0,1fr))!important}
