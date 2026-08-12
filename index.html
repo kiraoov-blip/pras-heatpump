@@ -370,39 +370,68 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
   .results-pane>.shift-settings .shift-controls{grid-template-columns:1fr!important}
   .results-pane .kpis{grid-template-columns:1fr!important}
 }
+
+
+/* v24: compact 2x3 analysis conditions + inline rate table + SMP/tariff comparison row */
+.settings-pane .analysis-settings{padding:16px 18px!important}
+.settings-pane .analysis-settings .analysis-grid-v24{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px 14px!important;
+  align-items:end!important;
+}
+.settings-pane .analysis-settings .analysis-grid-v24>.field{min-width:0}
+.settings-pane .analysis-settings .tariff-compare-field{grid-column:auto!important}
+.tariff-select-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:0}
+.tariff-select-pair>div{min-width:0}
+.tariff-select-pair .mini{display:block;margin:0 0 3px;color:#64748b;font-size:10px;line-height:1}
+.tariff-select-pair select{min-width:0;font-size:12px!important;padding-left:8px!important;padding-right:6px!important}
+.rate-inline-section{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.rate-inline-title{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;font-size:13px;color:var(--text)}
+.rate-inline-title .mini{color:var(--muted)}
+.rate-inline-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.rate-inline-grid .rates{min-width:0;padding:9px 10px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:11.5px;line-height:1.5}
+.cosy-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.cosy-head-actions button{height:30px;padding:0 10px;font-size:11px}
+.smp-tariff-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:14px!important;align-items:start}
+.smp-tariff-row>.panel{min-width:0;height:100%}
+.smp-tariff-row .tablewrap{max-width:100%;overflow-x:visible}
+.smp-tariff-row table{width:100%;table-layout:fixed}
+.smp-tariff-row #smpCostTable th,.smp-tariff-row #smpCostTable td{font-size:11.5px;padding:8px 7px}
+.smp-tariff-row #summaryTable th,.smp-tariff-row #summaryTable td{font-size:11.5px;padding:8px 6px}
+@media(max-width:1120px){
+  .settings-pane .analysis-settings .analysis-grid-v24{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .rate-inline-grid{grid-template-columns:1fr!important}
+  .smp-tariff-row{grid-template-columns:1fr!important}
+}
+@media(max-width:620px){
+  .settings-pane .analysis-settings .analysis-grid-v24{grid-template-columns:1fr!important}
+  .tariff-select-pair{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <header><h1>히트펌프 요금분석 시뮬레이터(PRAS - Heatpump)</h1><p>Pricing and Revenue Analysis Simulator - Heatpump</p></header>
 <div class="wrap"><div class="dashboard-shell"><aside class="settings-pane"><div class="pane-heading">분석 조건</div><div class="panel settings-card analysis-settings">
 <div class="statusline"><div><span class="badge off" id="loadShiftBadge">부하이전 미적용</span> <span class="badge">전력량요금만 비교</span></div></div>
-<div class="grid controls">
+<div class="grid controls analysis-grid-v24">
 <div class="field"><label>분석연도</label><select id="year"></select></div>
 <div class="field"><label>고객</label><select id="customer"><option value="all">전체 고객</option></select></div>
 <div class="field"><label>계절</label><select id="season"><option value="all">전체</option><option value="spring">봄 (3~5월)</option><option value="summer">여름 (6~8월)</option><option value="autumn">가을 (9~10월)</option><option value="winter">겨울 (11~2월)</option></select></div>
 <div class="field"><label>분석월</label><select id="month"><option value="all">전체</option></select></div>
 <div class="field"><label>요일</label><select id="weekday"><option value="all">전체</option><option value="weekday">평일(월~금)</option><option value="weekend">주말(토·일)</option><option value="0">월요일</option><option value="1">화요일</option><option value="2">수요일</option><option value="3">목요일</option><option value="4">금요일</option><option value="5">토요일</option><option value="6">일요일</option></select></div>
-<div class="field"><label>기준 요금제</label><select id="baseTariff"><option value="p">주택용 누진제</option><option value="t">주택용 TOU</option><option selected="" value="g">일반용(저압)</option></select></div>
-<div class="field"><label>시나리오 요금제</label><select id="scenarioTariff"><option value="p">주택용 누진제</option><option value="t">주택용 TOU</option><option value="g">일반용(저압)</option><option selected="" value="o">히트펌프 전용 요금제</option></select></div>
+<div class="field tariff-compare-field"><label>요금제 비교</label><div class="tariff-select-pair"><div><span class="mini">기준</span><select id="baseTariff"><option value="p">주택용 누진제</option><option value="t">주택용 TOU</option><option selected="" value="g">일반용(저압)</option></select></div><div><span class="mini">시나리오</span><select id="scenarioTariff"><option value="p">주택용 누진제</option><option value="t">주택용 TOU</option><option value="g">일반용(저압)</option><option selected="" value="o">히트펌프 전용 요금제</option></select></div></div></div>
 </div>
-<div class="comparebar">
-<div class="side">기준안<b id="baseNameTop">일반용(저압)</b></div>
-<div class="arrow">→</div>
-<div class="side">시나리오<b id="scenarioNameTop">히트펌프 전용 요금제</b></div>
+<div class="rate-inline-section">
+<div class="rate-inline-title"><b>2026년 적용 요금표</b><span class="mini">전력량요금 기준</span></div>
+<div class="rate-inline-grid">
+<div class="rates"><b>일반용(갑)Ⅰ 저압</b><br/>여름 132.4원/kWh · 봄·가을 91.9원/kWh · 겨울 119.0원/kWh</div>
+<div class="rates"><b>제주 주택용 TOU</b><br/>봄·가을 125.8 / 153.8 / 172.4 · 여름·겨울 138.7 / 184.7 / 220.5원/kWh<br/><span class="mini">경부하 / 중간부하 / 최대부하 · 월 1,000kWh 초과분 별도 반영</span></div>
+<div class="rates"><b>주택용 저압 누진</b><br/>120.0 / 214.6 / 307.3원/kWh<br/><span class="mini">하계 300·450kWh, 기타 200·400kWh 구간</span></div>
 </div>
-<div class="note" id="coverageNote" style="margin-top:10px"></div>
-<div class="note" style="margin-top:4px">모든 요금제는 <b>2026년 현행 전력량요금표</b>를 적용하며, 선택한 기준 요금제를 중심으로 시나리오 증감액·증감률을 산정함.</div>
-</div><div class="panel settings-card rates-settings">
-<h2>2026년 적용 요금표</h2>
-<div class="rategrid">
-<div class="rates"><b>일반용(갑)Ⅰ 저압</b><br/>여름 132.4원/kWh<br/>봄·가을 91.9원/kWh<br/>겨울 119.0원/kWh</div>
-<div class="rates"><b>제주 주택용 TOU</b><br/>봄·가을 125.8 / 153.8 / 172.4<br/>여름·겨울 138.7 / 184.7 / 220.5<br/><span class="mini">경부하 / 중간부하 / 최대부하 · 해당 월 1,000kWh 초과분 별도 반영</span></div>
 </div>
-<div class="sep"></div>
-<div class="rates"><b>주택용 저압 누진 전력량요금</b>　120.0 / 214.6 / 307.3원/kWh <span class="mini">(하계 300·450kWh, 기타 200·400kWh 구간)</span></div>
-<div class="actions" style="margin-top:12px"><button id="resetScenario">Cosy 기본 설정으로 초기화</button></div>
 </div></aside><main class="results-pane"><div class="pane-heading results-heading">시나리오 설정</div><div class="panel settings-card cosy-settings">
-<div class="statusline"><h2 style="margin:0">히트펌프 전용(Cosy형) 시나리오</h2><span class="badge scenario" id="cosyUseBadge">시나리오 적용 중</span></div>
+<div class="statusline"><h2 style="margin:0">히트펌프 전용(Cosy형) 시나리오</h2><div class="cosy-head-actions"><span class="badge scenario" id="cosyUseBadge">시나리오 적용 중</span><button id="resetScenario">Cosy 기본 설정으로 초기화</button></div></div>
 <div class="grid controls" style="grid-template-columns:repeat(3,minmax(150px,1fr))">
 <div class="field"><label>요금 설정 방식</label><select id="cosyPriceMode"><option selected="" value="pct">비율 조정 (기본)</option><option value="fixed">직접 단가 입력 (원/kWh)</option></select></div>
 <div class="field"><label>할인시간</label><input disabled="" id="discountHours"/></div>
@@ -468,14 +497,14 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 <div class="panel kpi"><div class="lbl">4개 요금제 중 최저</div><div class="val" id="kBest">-</div><div class="sub" id="kBestSub">-</div></div>
 <div class="panel kpi"><div class="lbl">SMP 기반 구입비 영향</div><div class="val" id="kSmpImpact">-</div><div class="sub" id="kSmpSub">2022~2025 제주 SMP 기준</div></div>
 </div>
+<div class="grid smp-tariff-row">
 <div class="panel"><h2>SMP 기반 구입비 영향</h2>
 <div class="note" id="smpCostNote" style="margin-bottom:8px">시간별 사용량 변동분(시나리오−기준)에 해당 시각의 원래 제주 SMP를 곱한 값을 모두 합산하여 산정함. 수요이전에 따른 SMP 자체 변화는 없다고 가정함.</div>
 <div class="tablewrap"><table id="smpCostTable"><thead><tr><th>구분</th><th>사용량 변동</th><th>SMP 기반 비용효과</th><th>해석</th></tr></thead><tbody></tbody></table></div>
 <div class="note" id="smpCostReference" style="margin-top:8px">기준·시나리오 총 SMP 기반 구입비와 가중평균 SMP는 참고정보로 표시함.</div>
-</div><div class="grid two">
-<div class="panel"><h2>요금제별 비교</h2><div class="tablewrap"><table id="summaryTable"><thead><tr><th>요금제</th><th>전력량요금</th><th>기준 대비</th><th>증감률</th><th>평균단가</th></tr></thead><tbody></tbody></table></div></div>
-<div class="panel"><h2>24시간 평균 사용패턴</h2><div class="chartbox"><canvas id="hourlyChart"></canvas></div><div class="note" id="hourlyNote">부하이전 없음: 실제 사용패턴만 표시함.</div><div class="legendline" id="hourlyLegend"><span style="color:#2563eb">— 실제 사용</span><span id="shiftedLegend" style="color:#0f766e;display:none">— 이전 후 사용</span></div></div>
+</div><div class="panel"><h2>요금제별 비교</h2><div class="tablewrap"><table id="summaryTable"><thead><tr><th>요금제</th><th>전력량요금</th><th>기준 대비</th><th>증감률</th><th>평균단가</th></tr></thead><tbody></tbody></table></div></div>
 </div>
+<div class="panel"><h2>24시간 평균 사용패턴</h2><div class="chartbox"><canvas id="hourlyChart"></canvas></div><div class="note" id="hourlyNote">부하이전 없음: 실제 사용패턴만 표시함.</div><div class="legendline" id="hourlyLegend"><span style="color:#2563eb">— 실제 사용</span><span id="shiftedLegend" style="color:#0f766e;display:none">— 이전 후 사용</span></div></div>
 <div class="panel"><h2>요금 변화 효과 분해</h2>
 <div class="chartbox" style="height:300px"><canvas id="effectChart"></canvas></div>
 <div class="effect-summary">
@@ -637,7 +666,7 @@ function calculate(){
 function render(total,byMonth,byCust,byHour,bySW){
  const baseKey=$('baseTariff').value,scenarioKey=$('scenarioTariff').value,base=tariffValue(total,baseKey),scenario=tariffValue(total,scenarioKey);
  const custCount=byCust.size,d=+($('discountPct').value||0),u=+($('upliftPct').value||0);$('discMultTxt').textContent=(100-d).toFixed(1)+'%';$('upMultTxt').textContent=(100+u).toFixed(1)+'%';updatePriceModeUI();updateShiftUI();
- $('baseNameTop').textContent=TARIFF_NAMES[baseKey];$('scenarioNameTop').textContent=TARIFF_NAMES[scenarioKey];$('kBaseLabel').textContent='기준 · '+TARIFF_NAMES[baseKey];$('kScenarioLabel').textContent='시나리오 · '+TARIFF_NAMES[scenarioKey];
+ {const _b=$('baseNameTop'),_s=$('scenarioNameTop');if(_b)_b.textContent=TARIFF_NAMES[baseKey];if(_s)_s.textContent=TARIFF_NAMES[scenarioKey];}$('kBaseLabel').textContent='기준 · '+TARIFF_NAMES[baseKey];$('kScenarioLabel').textContent='시나리오 · '+TARIFF_NAMES[scenarioKey];
  $('cosyUseBadge').textContent=scenarioKey==='o'?'시나리오 적용 중':'HP 전용 선택 시 적용';$('cosyUseBadge').className='badge '+(scenarioKey==='o'?'scenario':'off');
  $('kUsage').textContent=fmtKwh(total.u);$('kCust').textContent=custCount+'개 고객 · 관측 '+total.n.toLocaleString()+'시간'+(shiftEnabled()?' · 이전 '+fmtKwh(total.shiftMoved):'');$('kBase').textContent=fmtWon(base);$('kScenario').textContent=fmtWon(scenario);$('shiftMovedKwh').textContent=fmtKwh(total.shiftMoved);$('shiftSourceDecreaseKwh').textContent=fmtKwh(total.shiftSourceDecrease);$('shiftDestIncreaseKwh').textContent=fmtKwh(total.shiftDestIncrease);$('shiftRateDisplay').textContent=shiftEnabled()?((shiftRate()*100).toFixed(1)+'%'):'0%';$('shiftDistDisplay').textContent=shiftEnabled()?($('shiftDistribution').value==='equal'?'균등배분':'기존 패턴 비례'):'부하이전 없음';const shiftGap=Math.abs(total.shiftSourceDecrease-total.shiftDestIncrease);$('shiftConservation').textContent=shiftEnabled()?(shiftGap<1e-6?'일치 ✓':'차이 '+fmtKwh(shiftGap)):'-';$('shiftConservation').className='sv '+(shiftEnabled()&&shiftGap>=1e-6?'bad':'good');
  const diff=scenario-base,pct=base?diff/base*100:NaN;$('kDiff').textContent=fmtWon(diff);$('kDiff').className='val '+(diff<0?'good':diff>0?'bad':'');$('kDiffPct').textContent=fmtPct(pct);$('kDiffPct').className='val '+(pct<0?'good':pct>0?'bad':'');
@@ -820,8 +849,7 @@ function setup(){
  $('resetScenario').onclick=()=>{$('cosyPriceMode').value='pct';$('discountPct').value='51.0';$('upliftPct').value='50.0';$('fixedDiscRate').value='';$('fixedNormalRate').value='';$('fixedPeakRate').value='';$('loadShiftMode').value='off';$('shiftPct').value='30.0';$('shiftPctSlider').value='30';$('shiftDistribution').value='equal';resetCosyHours();resetSourceHours();renderTariffStrip();updatePriceModeUI();updateShiftUI();calculate()};
  $('exportCsv').onclick=exportCsv;updateCoverage();calculate();
 }
-function updateCoverage(){const Y=$('year').value;if(Y==='all'){$('coverageNote').innerHTML=`전체 데이터는 ${META.customers.length}개 고객, ${META.records.toLocaleString()} 고객-일 관측치임. 연도별 표본 구성이 달라 연도 간 단순 총액 비교 시 고객 수 차이에 유의.`;return}const x=META.years[Y];let warn='';if(Y==='2022')warn=' <span class="warn">2022년은 7개 고객만 존재하며 일부 고객-일 관측이 불완전함.</span>';if(Y==='2023')warn=' <span class="warn">일부 고객의 4월 5~11일 관측이 누락되어 있음.</span>';if(Y==='2024')warn=' <span class="warn">일부 고객은 2월 중순부터 관측됨.</span>';if(Y==='2026')warn=' <span class="warn">2026년은 8월 5일까지의 부분연도임.</span>';$('coverageNote').innerHTML=`${Y}년: ${x.customers}개 고객 · ${x.min}~${x.max} · 시간값 관측률 ${x.coverage}%.${warn}`}
-function exportCsv(){const baseKey=$('baseTariff').value,scenarioKey=$('scenarioTariff').value;const rows=[['고객ID','사용량(kWh)','기준요금제','기준요금(원)','시나리오요금제','시나리오요금(원)','증감액(원)','증감률(%)']];document.querySelectorAll('#customerTable tbody tr').forEach(tr=>{const td=[...tr.children].map(x=>x.textContent.replace(/,/g,''));if(td.length===6&&!td[0].includes('선택 조건'))rows.push([td[0],td[1].replace(' kWh',''),TARIFF_NAMES[baseKey],td[2].replace('원',''),TARIFF_NAMES[scenarioKey],td[3].replace('원',''),td[4].replace('원',''),td[5].replace('%','')])});const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='히트펌프_기준안_시나리오_분석결과.csv';a.click();URL.revokeObjectURL(a.href)}
+function updateCoverage(){} function exportCsv(){const baseKey=$('baseTariff').value,scenarioKey=$('scenarioTariff').value;const rows=[['고객ID','사용량(kWh)','기준요금제','기준요금(원)','시나리오요금제','시나리오요금(원)','증감액(원)','증감률(%)']];document.querySelectorAll('#customerTable tbody tr').forEach(tr=>{const td=[...tr.children].map(x=>x.textContent.replace(/,/g,''));if(td.length===6&&!td[0].includes('선택 조건'))rows.push([td[0],td[1].replace(' kWh',''),TARIFF_NAMES[baseKey],td[2].replace('원',''),TARIFF_NAMES[scenarioKey],td[3].replace('원',''),td[4].replace('원',''),td[5].replace('%','')])});const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='히트펌프_기준안_시나리오_분석결과.csv';a.click();URL.revokeObjectURL(a.href)}
 setup();
 </script>
 </body></html>
