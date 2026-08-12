@@ -730,6 +730,19 @@ function renderLoadBandSummary(byHour,baseKey,scenarioKey){
  }
 }
 
+function fmtExpandedEnergy(v){
+ if(!Number.isFinite(v))return '-';
+ const sign=v<0?'-':v>0?'+':'';const a=Math.abs(v);
+ if(a>=1000000)return sign+(a/1000000).toLocaleString('ko-KR',{maximumFractionDigits:2})+' GWh/년';
+ if(a>=1000)return sign+(a/1000).toLocaleString('ko-KR',{maximumFractionDigits:2})+' MWh/년';
+ return sign+a.toLocaleString('ko-KR',{maximumFractionDigits:1})+' kWh/년';
+}
+function fmtExpandedEnergyAbs(v){
+ if(!Number.isFinite(v))return '-';const a=Math.abs(v);
+ if(a>=1000000)return (v/1000000).toLocaleString('ko-KR',{maximumFractionDigits:2})+' GWh/년';
+ if(a>=1000)return (v/1000).toLocaleString('ko-KR',{maximumFractionDigits:2})+' MWh/년';
+ return v.toLocaleString('ko-KR',{maximumFractionDigits:1})+' kWh/년';
+}
 function renderHourlyUsageSummary(byHour,scenarioKey,annualHourly,subs){
  const tb=$('hourlyChangeTable')?.querySelector('tbody');
  if(tb){tb.innerHTML='';for(let h=0;h<24;h++){
