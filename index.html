@@ -438,6 +438,103 @@ footer{margin-top:18px;color:#64748b;font-size:11px;line-height:1.6}
 @media(max-width:1100px){.shift-rule-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.shift-master-row{grid-template-columns:1fr}.rate-input-row{grid-template-columns:105px minmax(0,1fr)}}
 @media(max-width:650px){.shift-rule-grid{grid-template-columns:1fr}.rate-input-row{grid-template-columns:1fr}.shift-head-actions{margin-left:0}.statusline{flex-wrap:wrap}}
 
+
+
+/* v30: mobile readability and anti-overlap refinements */
+@media(max-width:760px){
+  html,body{overflow-x:hidden!important}
+  body{font-size:13px}
+  header{padding:15px 13px 13px!important}
+  header h1{font-size:19px!important;line-height:1.28!important;letter-spacing:-.35px;white-space:normal!important;word-break:keep-all;overflow-wrap:anywhere}
+  header p{font-size:11.5px!important;line-height:1.45!important;white-space:normal!important}
+  .wrap{padding:9px 8px 28px!important}
+  .panel{padding:12px 11px!important;border-radius:10px}
+  .panel h2{font-size:15px!important;line-height:1.35!important;white-space:normal!important;word-break:keep-all}
+  .panel h3{font-size:13.5px!important;line-height:1.35!important}
+  .note,.mini{line-height:1.5!important;white-space:normal!important;overflow-wrap:anywhere}
+  .statusline{align-items:flex-start!important;gap:7px!important}
+  .cosy-head-actions,.shift-head-actions{width:100%;justify-content:flex-start!important}
+
+  /* Analysis inputs: compact two-column layout on phones, one column only on very narrow screens. */
+  .settings-pane .analysis-settings .analysis-grid-v24{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  .settings-pane .analysis-settings .field label{font-size:11px!important}
+  .settings-pane .analysis-settings .field select,.settings-pane .analysis-settings .field input{height:36px!important;font-size:12.5px!important;min-width:0!important}
+  .tariff-select-pair{grid-template-columns:1fr!important;gap:6px!important}
+  .rate-inline-grid{grid-template-columns:1fr!important}
+  .rate-inline-grid .rates{font-size:11.5px!important;line-height:1.5!important}
+
+  /* Scenario controls: do not squeeze labels and values into the same narrow line. */
+  .results-pane>.cosy-settings .controls,.results-pane>.shift-settings .shift-controls{grid-template-columns:1fr!important}
+  .rate-input-row{grid-template-columns:1fr!important;gap:5px!important}
+  .rate-preview{font-size:11.5px!important;min-height:34px!important}
+  .shift-master-row,.shift-rule-grid{grid-template-columns:1fr!important}
+  .shift-rule{padding:10px!important}
+  .shift-rule-head{align-items:flex-start!important;flex-wrap:wrap!important}
+  .shift-rule .sliderpair{grid-template-columns:80px minmax(0,1fr)!important}
+
+  /* 24-hour tariff bars: 12x2 rather than 24 tiny columns. */
+  .results-pane>.cosy-settings .tariff-row,.results-pane>.shift-settings .tariff-row{grid-template-columns:1fr!important;gap:5px!important}
+  .results-pane>.cosy-settings .tariff-row-label,.results-pane>.shift-settings .tariff-row-label{text-align:left!important;font-size:11.5px!important;line-height:1.35!important}
+  .results-pane>.cosy-settings .tariff-strip,.results-pane>.shift-settings .tariff-strip{grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:3px!important}
+  .results-pane>.cosy-settings .hour{height:42px!important;border-radius:4px!important}
+  .results-pane>.cosy-settings .hour .hn{font-size:9px!important}
+  .results-pane>.cosy-settings .hour .hs{font-size:7.5px!important;display:block!important}
+  .results-pane>.cosy-settings .hour .tb{font-size:7px!important;display:block!important}
+  .source-hour{height:34px!important;font-size:9px!important}
+  .hourlegend,.legendline{gap:8px!important;font-size:10.5px!important}
+
+  /* Result cards: values wrap instead of colliding. */
+  .results-pane .kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .results-pane .kpi{min-height:82px!important;padding:10px!important}
+  .results-pane .kpi .lbl{font-size:10.5px!important;line-height:1.25!important}
+  .results-pane .kpi .val{font-size:15px!important;white-space:normal!important;line-height:1.2!important;overflow-wrap:anywhere}
+  .results-pane .kpi .sub{font-size:9.5px!important;line-height:1.3!important;white-space:normal!important}
+  .effect-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  .effect-stat{padding:9px!important}
+  .effect-stat .el{font-size:10.5px!important;line-height:1.25!important}
+  .effect-stat .ev{font-size:15px!important;white-space:normal!important;line-height:1.2!important}
+  .effect-stat .es{font-size:9.5px!important;line-height:1.3!important}
+
+  /* Dense tables use a local scroller so text stays readable and the page never overflows. */
+  .tablewrap{max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  #summaryTable,#smpCostTable{min-width:500px!important}
+  #touBreakTable,#customerTable{min-width:620px!important}
+  .hourly-scroll{overflow-x:auto!important;overflow-y:auto!important;max-width:100%!important}
+  #hourlyChangeTable,#hourlyDeploymentTable{min-width:560px!important;width:560px!important;table-layout:fixed!important}
+  #loadBandUsageTable,#loadBandBillTable{min-width:520px!important;width:520px!important;table-layout:fixed!important}
+  #hourlyChangeTable th,#hourlyChangeTable td,#hourlyDeploymentTable th,#hourlyDeploymentTable td,
+  #loadBandUsageTable th,#loadBandUsageTable td,#loadBandBillTable th,#loadBandBillTable td{font-size:11px!important;padding:7px 6px!important;white-space:nowrap!important}
+  .load-band-split{grid-template-columns:1fr!important;gap:10px!important}
+  .summary-tabs{display:flex!important;max-width:100%;overflow-x:auto;white-space:nowrap}
+  .summary-tab{flex:0 0 auto}
+
+  /* SMP/tariff panels stack; interpretation wraps naturally. */
+  .smp-tariff-row{grid-template-columns:1fr!important}
+  .smp-tariff-row #smpCostTable{min-width:0!important;width:100%!important}
+  .smp-tariff-row #smpCostTable th,.smp-tariff-row #smpCostTable td{font-size:10.5px!important;padding:7px 4px!important;line-height:1.3!important}
+  .smp-tariff-row #smpCostTable th:nth-child(1),.smp-tariff-row #smpCostTable td:nth-child(1){width:25%!important}
+  .smp-tariff-row #smpCostTable th:nth-child(2),.smp-tariff-row #smpCostTable td:nth-child(2){width:18%!important}
+  .smp-tariff-row #smpCostTable th:nth-child(3),.smp-tariff-row #smpCostTable td:nth-child(3){width:22%!important}
+  .smp-tariff-row #smpCostTable th:nth-child(4),.smp-tariff-row #smpCostTable td:nth-child(4){width:35%!important}
+  .smp-tariff-row #smpCostTable td:nth-child(2),.smp-tariff-row #smpCostTable td:nth-child(3){white-space:normal!important;overflow-wrap:anywhere}
+
+  .chartbox{height:245px!important}
+  .legend{font-size:10.5px!important;gap:8px!important}
+  button{max-width:100%;white-space:normal;line-height:1.2}
+}
+
+@media(max-width:480px){
+  .settings-pane .analysis-settings .analysis-grid-v24{grid-template-columns:1fr!important}
+  .results-pane>.cosy-settings .tariff-strip,.results-pane>.shift-settings .tariff-strip{grid-template-columns:repeat(8,minmax(0,1fr))!important}
+  .results-pane>.cosy-settings .hour{height:44px!important}
+  .results-pane .kpis{grid-template-columns:1fr!important}
+  .effect-summary{grid-template-columns:1fr!important}
+  .summary-tabs{width:100%}
+  .summary-tab{font-size:10.5px!important;padding:0 9px!important}
+  .panel{padding:11px 9px!important}
+  .chartbox{height:225px!important}
+}
+
 </style>
 </head>
 <body>
